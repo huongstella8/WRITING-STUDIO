@@ -246,8 +246,14 @@
   .btn-primary:hover{background:var(--accent-ink)}
   .btn-primary:disabled{background:var(--line-strong);color:var(--surface);cursor:not-allowed;opacity:.7}
   [data-theme="dark"] .btn-primary{color:#08110f}
+  
   .btn-ghost{background:transparent;border-color:var(--line-strong);color:var(--ink)}
   .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  
+  /* Reset button specific styling */
+  .btn-reset{background:var(--surface-2); border-color:var(--line-strong); color:var(--bad);}
+  .btn-reset:hover{background:var(--bad-soft); border-color:var(--bad); color:var(--bad);}
+
   .btn-start{background:var(--accent);color:#fff}
   [data-theme="dark"] .btn-start{color:#08110f}
 
@@ -322,7 +328,7 @@
       <div class="seal">W</div>
       <div class="brand-txt">
         <b>Writing Task 2</b>
-        <span>Technology · Timed practice</span>
+        <span id="topicTitle">Loading topic...</span>
       </div>
     </div>
     <div class="timer-wrap">
@@ -371,7 +377,7 @@
         <div class="task-meta mono">40 minutes · min. 250 words</div>
       </div>
       <div class="prompt">
-        <p class="q" id="essayPrompt">Technology is becoming increasingly prevalent in the world today. In the not too distant future, technology will completely replace the teacher in the classroom. Do you agree or disagree?</p>
+        <p class="q" id="essayPrompt">Loading your essay question...</p>
       </div>
       <p class="rubric"><b>Give reasons</b> for your answer and include any relevant <b>examples</b> from your own knowledge or experience. You should write <b>at least 250 words</b>.</p>
     </section>
@@ -394,7 +400,7 @@
 
     <!-- Checklist -->
     <section class="card no-print">
-      <div class="eyebrow">Before you submit · Self-check</div>
+      <div class="eyebrow">Before you submit · Band 6 self-check</div>
       <div class="sec-title">Tick each point honestly. All eight are required to finish.</div>
       <div class="check-list" id="checklist"></div>
       <div class="check-progress"><b id="checkCount">0</b> / 8 checked</div>
@@ -465,6 +471,7 @@
 <div class="actionbar no-print" id="actionbar" hidden>
   <div class="actionbar-inner">
     <div class="hint" id="submitHint">Complete the checklist to finish.</div>
+    <button class="btn btn-reset" id="resetBtn">⟲ Restart Test</button>
     <button class="btn btn-primary" id="finishBtn" disabled>Finish &amp; Assess Essay</button>
   </div>
 </div>
@@ -476,11 +483,10 @@
   "use strict";
   var TEACHER = "huongstella8@gmail.com";
   var TOTAL = 40*60;                 
-  var KEY = "ielts_t2_u5_ex10_v1";   
   var $ = function(id){return document.getElementById(id);};
 
   // ---------------------------------------------------------
-  // IMPORTANT: REPLACE WITH YOUR GOOGLE APPS SCRIPT URL
+  // THE APPS SCRIPT WEB APP URL
   // ---------------------------------------------------------
   var ASSESSMENT_ENDPOINT = "https://script.google.com/macros/s/AKfycbx5v98It8CHFadLVg2nqs2cv6Fq7xMVBGAe3vrA9LqA_qGxeIst3tR7AfCsbnA0llsx2A/exec";
 
@@ -624,6 +630,41 @@
     return m+" min "+String(s).padStart(2,"0")+" s";
   }
 
+  /* ---------- reset test ---------- */
+  $("resetBtn").addEventListener("click", function(){
+    if (confirm("Are you sure you want to delete your current essay and restart the timer? (Your previous submission, if any, is already saved).")) {
+      // Clear data & reset state
+      state.essay = "";
+      lastEssay = "";
+      state.remaining = TOTAL;
+      state.checks = [false,false,false,false,false,false,false,false];
+      state.submitted = false;
+      save();
+
+      // Reset UI elements
+      var essayEl = $("essay");
+      essayEl.value = "";
+      essayEl.disabled = false;
+      
+      boxes.forEach(function(b) { b.checked = false; });
+      refreshChecks();
+      refreshLive();
+      renderTimer();
+      
+      // Hide report, restore submit button
+      $("reportSection").style.display = "none";
+      $("finishBtn").style.display = "inline-flex";
+      updateFinishBtn();
+      
+      toast("Test reset. The timer has restarted.");
+      
+      // Scroll to writing area and ensure timer is running
+      essayEl.focus();
+      essayEl.scrollIntoView({behavior:"smooth",block:"center"});
+      if (!tick) startTimer();
+    }
+  });
+
   /* ---------- submission & api call ---------- */
   function doFinish(auto){
     if(state.submitted)return;
@@ -631,6 +672,8 @@
       if(!state.checks.every(Boolean)||!state.name.trim()||!emailValid(state.email.trim())||wordCount(state.essay)===0)return;
     }
     state.submitted=true; 
+    
+    // Increment attempts on submission
     state.attempts += 1;
     save();
     
@@ -842,14 +885,23 @@
     $("essay").focus();
   });
 
-  /* ---------- init ---------- */
-  function init(){
+  /* ---------- dynamic init ---------- */
+  var KEY = ""; 
+  
+  function initApp(fetchedData) {
+    $("essayPrompt").textContent = fetchedData.prompt;
+    $("topicTitle").textContent = fetchedData.topic + " · Timed practice";
+    
+    KEY = "ielts_desk_save_" + fetchedData.id;
+    
     load(); applyTheme();
-    $("name").value=state.name||"";
-    $("email").value=state.email||"";
-    essayEl.value=state.essay||""; lastEssay=state.essay||"";
-    boxes.forEach(function(b){var i=+b.getAttribute("data-i");b.checked=!!state.checks[i];});
-    if(typeof state.remaining!=="number"||state.remaining>TOTAL) state.remaining=TOTAL;
+    $("name").value = state.name || "";
+    $("email").value = state.email || "";
+    essayEl.value = state.essay || ""; 
+    lastEssay = state.essay || "";
+    boxes.forEach(function(b){ var i=+b.getAttribute("data-i"); b.checked=!!state.checks[i]; });
+    
+    if(typeof state.remaining!=="number" || state.remaining>TOTAL) state.remaining=TOTAL;
     if(typeof state.attempts!=="number") state.attempts = 0;
     
     renderTimer(); refreshChecks(); refreshLive(); updateFinishBtn();
@@ -862,8 +914,7 @@
       $("submitHint").textContent="Test submitted and saved.";
       
       var cw = $("critWrap");
-      cw.innerHTML = "<div style='color:var(--muted); font-weight:500;'>Your test was submitted in a previous session. To take it again, clear your browser data.</div>";
-      
+      cw.innerHTML = "<div style='color:var(--muted); font-weight:500;'>Your test was submitted in a previous session. You can click 'Restart Test' below to try again.</div>";
     } else if(state.started){
       revealExam();
       startTimer();
@@ -871,7 +922,20 @@
     
     if(!save()) markSaved(false);
   }
-  init();
+
+  var urlParams = new URLSearchParams(window.location.search);
+  var questionId = urlParams.get('id') || "";
+  var fetchUrl = ASSESSMENT_ENDPOINT + (questionId ? "?id=" + questionId : "");
+
+  fetch(fetchUrl)
+    .then(res => res.json())
+    .then(data => {
+      initApp(data);
+    })
+    .catch(err => {
+      console.error("Lỗi tải đề thi:", err);
+      $("essayPrompt").textContent = "Connection error. Could not load the prompt.";
+    });
 })();
 </script>
 </body>
