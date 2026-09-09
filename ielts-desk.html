@@ -885,14 +885,19 @@
     $("essay").focus();
   });
 
-  /* ---------- dynamic init ---------- */
-  var KEY = ""; 
-  
-  function initApp(fetchedData) {
-    $("essayPrompt").textContent = fetchedData.prompt;
-    $("topicTitle").textContent = fetchedData.topic + " · Timed practice";
+  /* ---------- khởi tạo trực tiếp không cần gọi Sheet đề bài ---------- */
+  function initDirect() {
+    // ĐIỀN TRỰC TIẾP CÂU HỎI VÀ CHỦ ĐỀ CỦA BẠN VÀO ĐÂY
+    var hardcodedPrompt = "Technology is becoming increasingly prevalent in the world today. In the not too distant future, technology will completely replace the teacher in the classroom. Do you agree or disagree?";
+    var hardcodedTopic = "Technology";
+    var hardcodedId = "default_task_01";
+
+    // Bơm trực tiếp vào giao diện
+    $("essayPrompt").textContent = hardcodedPrompt;
+    $("topicTitle").textContent = hardcodedTopic + " · Timed practice";
     
-    KEY = "ielts_desk_save_" + fetchedData.id;
+    // Khóa lưu nháp riêng cho câu hỏi này
+    KEY = "ielts_desk_save_" + hardcodedId;
     
     load(); applyTheme();
     $("name").value = state.name || "";
@@ -923,20 +928,6 @@
     if(!save()) markSaved(false);
   }
 
-  var urlParams = new URLSearchParams(window.location.search);
-  var questionId = urlParams.get('id') || "";
-  var fetchUrl = ASSESSMENT_ENDPOINT + (questionId ? "?id=" + questionId : "");
-
-  fetch(fetchUrl)
-    .then(res => res.json())
-    .then(data => {
-      initApp(data);
-    })
-    .catch(err => {
-      console.error("Lỗi tải đề thi:", err);
-      $("essayPrompt").textContent = "Connection error. Could not load the prompt.";
-    });
+  // Chạy luôn hàm khởi tạo trực tiếp
+  initDirect();
 })();
-</script>
-</body>
-</html>
