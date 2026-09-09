@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Task 2 Practice Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef1f4;
+    --surface:#ffffff;
+    --surface-2:#f6f8fa;
+    --ink:#1b2430;
+    --muted:#5c6673;
+    --faint:#8b95a1;
+    --line:#dde3ea;
+    --line-strong:#c6cfda;
+    --accent:#0f766e;
+    --accent-ink:#0b5850;
+    --accent-soft:#d6ece8;
+    --good:#15803d;
+    --good-soft:#dcf0e2;
+    --warn:#b45309;
+    --warn-soft:#f7e6cf;
+    --bad:#b91c1c;
+    --bad-soft:#f6d9d9;
+    --shadow:0 1px 2px rgba(20,30,45,.06),0 8px 28px rgba(20,30,45,.07);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0f1319;
+      --surface:#171d26;
+      --surface-2:#1d2530;
+      --ink:#e7ecf2;
+      --muted:#9aa5b2;
+      --faint:#6c7783;
+      --line:#2a333f;
+      --line-strong:#3a4552;
+      --accent:#39b3a6;
+      --accent-ink:#5fc9bd;
+      --accent-soft:#123330;
+      --good:#42c876;
+      --good-soft:#12301f;
+      --warn:#e0a458;
+      --warn-soft:#332512;
+      --bad:#f0736f;
+      --bad-soft:#331817;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1319;
+    --surface:#171d26;
+    --surface-2:#1d2530;
+    --ink:#e7ecf2;
+    --muted:#9aa5b2;
+    --faint:#6c7783;
+    --line:#2a333f;
+    --line-strong:#3a4552;
+    --accent:#39b3a6;
+    --accent-ink:#5fc9bd;
+    --accent-soft:#123330;
+    --good:#42c876;
+    --good-soft:#12301f;
+    --warn:#e0a458;
+    --warn-soft:#332512;
+    --bad:#f0736f;
+    --bad-soft:#331817;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:"Fraunces",Georgia,"Times New Roman",serif;line-height:1.15;text-wrap:balance;margin:0}
+  a{color:var(--accent)}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  .masthead{
+    background:linear-gradient(90deg,var(--accent-ink),var(--accent));
+    color:#fff;text-align:center;
+    font-family:"Fraunces",Georgia,serif;font-weight:600;
+    font-size:13px;letter-spacing:.42em;text-transform:uppercase;
+    padding:8px 22px 8px 28px;
+    text-indent:.42em;
+    border-bottom:1px solid rgba(0,0,0,.12);
+  }
+  [data-theme="dark"] .masthead{color:#08110f}
+
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    background:color-mix(in srgb,var(--surface) 88%,transparent);
+    backdrop-filter:saturate(1.2) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:900px;margin:0 auto;padding:12px 22px;
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+  .seal{
+    width:38px;height:38px;border-radius:9px;flex:none;
+    background:linear-gradient(150deg,var(--accent),var(--accent-ink));
+    color:#fff;display:grid;place-items:center;
+    font-family:"Fraunces",serif;font-weight:700;font-size:19px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .brand-txt{display:flex;flex-direction:column;line-height:1.1}
+  .brand-txt b{font-family:"Fraunces",serif;font-weight:600;font-size:16px}
+  .brand-txt span{font-size:11.5px;color:var(--muted);letter-spacing:.03em}
+
+  .timer-wrap{display:flex;align-items:center;gap:10px}
+  .timer{
+    font-family:"IBM Plex Mono",monospace;font-weight:500;
+    font-size:26px;letter-spacing:.02em;font-variant-numeric:tabular-nums;
+    padding:5px 14px;border-radius:10px;
+    background:var(--surface-2);border:1px solid var(--line);
+    color:var(--ink);
+  }
+  .timer.warn{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+  .timer.danger{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.55}}
+  @media (prefers-reduced-motion: reduce){.timer.danger{animation:none}}
+  .timer-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1px}
+
+  .icon-btn{
+    border:1px solid var(--line-strong);background:var(--surface);
+    color:var(--muted);border-radius:9px;width:38px;height:38px;
+    cursor:pointer;font-size:16px;display:grid;place-items:center;
+    transition:.15s;
+  }
+  .icon-btn:hover{color:var(--ink);border-color:var(--accent)}
+
+  main{max-width:900px;margin:0 auto;padding:26px 22px 120px}
+  .card{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:22px 24px;margin-bottom:20px;
+  }
+  .eyebrow{
+    font-size:11.5px;text-transform:uppercase;letter-spacing:.16em;
+    color:var(--accent);font-weight:600;margin-bottom:9px;
+  }
+
+  .start-card{border-color:var(--accent);background:linear-gradient(180deg,var(--accent-soft),var(--surface))}
+  [data-theme="dark"] .start-card{background:linear-gradient(180deg,var(--accent-soft),var(--surface))}
+  .start-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .start-copy{flex:1;min-width:240px}
+  .start-copy h2{font-size:22px;font-weight:600;margin-bottom:4px}
+  .start-copy p{margin:0;color:var(--muted);font-size:14px}
+  .start-row .btn-start{font-size:17px;padding:14px 30px;flex:none}
+  [hidden]{display:none !important}
+
+  .identity{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:560px){.identity{grid-template-columns:1fr}}
+  .field label{
+    display:block;font-size:12px;letter-spacing:.03em;color:var(--muted);
+    margin-bottom:6px;font-weight:500;
+  }
+  .field input{
+    width:100%;padding:11px 13px;font-size:15px;font-family:inherit;
+    color:var(--ink);background:var(--surface-2);
+    border:1px solid var(--line-strong);border-radius:10px;transition:.15s;
+  }
+  .field input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .field input.invalid{border-color:var(--bad);box-shadow:0 0 0 3px var(--bad-soft)}
+
+  .task-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .task-head h2{font-size:22px;font-weight:600;white-space:nowrap}
+  .task-meta{font-size:12.5px;color:var(--muted)}
+  .prompt{
+    background:var(--surface-2);border-left:3px solid var(--accent);
+    border-radius:0 10px 10px 0;padding:15px 18px;margin:4px 0 14px;
+  }
+  .prompt .q{font-family:"Fraunces",serif;font-size:18px;font-style:italic;color:var(--ink);line-height:1.4}
+  .rubric{font-size:14px;color:var(--muted);margin:0}
+  .rubric b{color:var(--ink);font-weight:600}
+
+  .write-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+  .write-head h2{font-size:18px;font-weight:600}
+  .counters{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+  .wc{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  .wc b{color:var(--ink)}
+  .wc.ok b{color:var(--good)}
+  .wc.low b{color:var(--warn)}
+  .save-dot{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--faint)}
+  .save-dot .d{width:7px;height:7px;border-radius:50%;background:var(--good);flex:none}
+  .save-dot.saving .d{background:var(--warn)}
+  textarea{
+    width:100%;min-height:340px;resize:vertical;
+    padding:18px 20px;font-family:"IBM Plex Sans",serif;
+    font-size:16px;line-height:1.75;color:var(--ink);
+    background:var(--surface);border:1px solid var(--line-strong);
+    border-radius:12px;transition:.15s;
+  }
+  textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  textarea:disabled{background:var(--surface-2);color:var(--muted);cursor:not-allowed}
+
+  .estrip{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+  .bandchip{
+    font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:14px;
+    background:var(--accent-soft);color:var(--accent-ink);
+    padding:4px 12px;border-radius:999px;border:1px solid transparent;
+  }
+  [data-theme="dark"] .bandchip{color:var(--accent-ink)}
+
+  .check-list{display:grid;gap:2px;margin:6px 0 4px}
+  .check-item{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:11px 12px;border-radius:10px;cursor:pointer;transition:.12s;
+  }
+  .check-item:hover{background:var(--surface-2)}
+  .check-item input{margin-top:3px;width:18px;height:18px;accent-color:var(--accent);flex:none;cursor:pointer}
+  .check-item .ct{font-size:14.5px}
+  .check-item .ck{font-size:11.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;display:block;margin-top:2px}
+  .check-progress{font-size:13px;color:var(--muted);margin-top:8px}
+  .check-progress b{color:var(--ink);font-family:"IBM Plex Mono",monospace}
+
+  .actionbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:35;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  }
+  .actionbar-inner{
+    max-width:900px;margin:0 auto;padding:13px 22px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  .hint{font-size:13px;color:var(--muted);margin-right:auto}
+  .btn{
+    font-family:inherit;font-size:15px;font-weight:600;
+    padding:11px 20px;border-radius:10px;cursor:pointer;border:1px solid transparent;
+    transition:.15s;display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-ink)}
+  .btn-primary:disabled{background:var(--line-strong);color:var(--surface);cursor:not-allowed;opacity:.7}
+  [data-theme="dark"] .btn-primary{color:#08110f}
+  .btn-ghost{background:transparent;border-color:var(--line-strong);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-start{background:var(--accent);color:#fff}
+  [data-theme="dark"] .btn-start{color:#08110f}
+
+  #reportSection{display:none}
+  .report-brand{font-family:"Fraunces",serif;font-weight:600;font-size:14px;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  .report-flag{
+    display:flex;align-items:center;gap:12px;padding:14px 18px;margin-bottom:18px;
+    background:var(--good-soft);border:1px solid var(--good);border-radius:12px;
+    color:var(--good);font-weight:600;font-size:15px;
+  }
+  .score-hero{display:flex;gap:26px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .bigband{text-align:center}
+  .bigband .n{font-family:"Fraunces",serif;font-weight:700;font-size:64px;line-height:1;color:var(--accent)}
+  .bigband .l{font-size:11.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-top:6px}
+  .crit{flex:1;min-width:240px;display:grid;gap:12px}
+  .crit-row{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center}
+  .crit-row .name{font-size:13.5px;font-weight:500}
+  .crit-row .val{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:15px;font-variant-numeric:tabular-nums}
+  .bar{grid-column:1/-1;height:7px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:6px;background:var(--accent);transition:width .6s ease}
+  .tips{margin:2px 0 0;padding:0;list-style:none;display:grid;gap:12px}
+  .tips li{font-size:14px;color:var(--ink);display:flex;flex-direction:column;gap:4px;line-height:1.5}
+  .tips li strong{color:var(--accent);font-weight:600;}
+  .disclaimer{font-size:12.5px;color:var(--faint);font-style:italic;margin-top:14px}
+
+  .report-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:4px 0 4px}
+  .meta-cell{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+  .meta-cell .k{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint)}
+  .meta-cell .v{font-size:15px;font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
+
+  .essay-print{white-space:pre-wrap;font-size:14.5px;line-height:1.7;color:var(--ink);
+    background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-top:8px}
+
+  .send-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:6px}
+  .teacher-pill{font-family:"IBM Plex Mono",monospace;font-size:13px;background:var(--surface-2);
+    border:1px solid var(--line);border-radius:8px;padding:6px 11px;color:var(--ink)}
+  .toast{
+    position:fixed;bottom:86px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:10px;
+    font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:80;box-shadow:var(--shadow);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .divider{height:1px;background:var(--line);margin:20px 0}
+  .sec-title{font-size:16px;font-weight:600;margin-bottom:10px}
+
+  @media print{
+    .no-print{display:none !important}
+    body{background:#fff;color:#000;font-size:12pt}
+    main{padding:0;max-width:100%}
+    .card{box-shadow:none;border:none;padding:0;margin:0 0 16px}
+    #reportSection{display:block !important}
+    .report-flag{background:none;border:none;color:#000;padding:0;margin-bottom:6px}
+    .bigband .n{color:#000}
+    .bar i{background:#444 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .bar{background:#eee !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .meta-cell,.essay-print{background:#fff;border:1px solid #ccc}
+    a{color:#000;text-decoration:underline}
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead no-print">Huong Stella Paradigm</div>
+
+<!-- TOP BAR -->
+<header class="topbar no-print">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="seal">W</div>
+      <div class="brand-txt">
+        <b>Writing Task 2</b>
+        <span>Technology · Timed practice</span>
+      </div>
+    </div>
+    <div class="timer-wrap">
+      <div>
+        <div class="timer-label">Time left</div>
+        <div class="timer mono" id="timer">40:00</div>
+      </div>
+      <button class="icon-btn" id="themeBtn" title="Toggle light / dark" aria-label="Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Start Gate -->
+  <section class="card no-print start-card" id="startCard">
+    <div class="start-row">
+      <div class="start-copy">
+        <div class="eyebrow" style="margin-bottom:6px">Ready when you are</div>
+        <h2>Begin your 40-minute test</h2>
+        <p>Fill in your details below, then press Start. The clock begins, your work autosaves every 10 seconds, and the task appears.</p>
+      </div>
+      <button class="btn btn-start" id="startBtn">▶ Start test</button>
+    </div>
+  </section>
+
+  <!-- Identity -->
+  <section class="card no-print">
+    <div class="eyebrow">Candidate details</div>
+    <div class="identity">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" placeholder="e.g. Nguyen Van A" autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="email">Your email</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+    </div>
+  </section>
+
+  <!-- Exam Stage -->
+  <div id="examStage" hidden>
+    <section class="card no-print">
+      <div class="task-head">
+        <h2>Writing Task 2</h2>
+        <div class="task-meta mono">40 minutes · min. 250 words</div>
+      </div>
+      <div class="prompt">
+        <p class="q" id="essayPrompt">Technology is becoming increasingly prevalent in the world today. In the not too distant future, technology will completely replace the teacher in the classroom. Do you agree or disagree?</p>
+      </div>
+      <p class="rubric"><b>Give reasons</b> for your answer and include any relevant <b>examples</b> from your own knowledge or experience. You should write <b>at least 250 words</b>.</p>
+    </section>
+
+    <!-- Writing Area -->
+    <section class="card no-print">
+      <div class="write-head">
+        <h2>Your essay</h2>
+        <div class="counters">
+          <span class="wc" id="wcBox"><b id="wc">0</b> words</span>
+          <span class="save-dot" id="saveDot"><span class="d"></span><span id="saveTxt">Not saved yet</span></span>
+        </div>
+      </div>
+      <textarea id="essay" placeholder="Start writing your response here. Aim for four paragraphs..." spellcheck="true"></textarea>
+      <div class="estrip">
+        <span class="bandchip mono" id="liveBand">Est. band —</span>
+        <span id="liveHint">Write at least 250 words.</span>
+      </div>
+    </section>
+
+    <!-- Checklist -->
+    <section class="card no-print">
+      <div class="eyebrow">Before you submit · Band 6 self-check</div>
+      <div class="sec-title">Tick each point honestly. All eight are required to finish.</div>
+      <div class="check-list" id="checklist"></div>
+      <div class="check-progress"><b id="checkCount">0</b> / 8 checked</div>
+    </section>
+  </div>
+
+  <!-- REPORT STAGE -->
+  <section class="card" id="reportSection">
+    <div class="report-flag no-print" id="reportStatus">Generating report...</div>
+    <div class="report-brand">Huong Stella Paradigm</div>
+    <div class="eyebrow">IELTS Writing Task 2 · AI Assessment Report</div>
+    
+    <div class="report-meta">
+      <div class="meta-cell"><div class="k">Candidate</div><div class="v" id="rName">—</div></div>
+      <div class="meta-cell"><div class="k">Email</div><div class="v" id="rEmail" style="font-size:13px;word-break:break-all">—</div></div>
+      <div class="meta-cell"><div class="k">Date</div><div class="v" id="rDate">—</div></div>
+      <div class="meta-cell"><div class="k">Time used</div><div class="v" id="rTime">—</div></div>
+      <div class="meta-cell"><div class="k">Word count</div><div class="v" id="rWords">—</div></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="score-hero">
+      <div class="bigband">
+        <div class="n" id="rOverall">—</div>
+        <div class="l">Estimated band</div>
+      </div>
+      <div class="crit" id="critWrap">
+        <!-- Backend scores inject here -->
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-title">Examiner Feedback</div>
+    <ul class="tips" id="tips">
+        <!-- Backend feedback injects here -->
+    </ul>
+
+    <p class="disclaimer"><b>Important — please read.</b> These band scores are generated by an AI assistant mapped to the official IELTS Writing Task 2 descriptors. This is a formative study aid, not an official IELTS result. Your essay and score have been automatically logged for your teacher.</p>
+
+    <div class="divider"></div>
+    <div class="sec-title">Self-assessment checklist</div>
+    <ul class="tips" id="rChecklist" style="gap:6px"></ul>
+
+    <div class="divider"></div>
+    <div class="sec-title">Submitted essay</div>
+    <div class="essay-print" id="rEssay">—</div>
+
+    <div class="divider no-print"></div>
+    <div class="no-print">
+      <div class="eyebrow">Final step</div>
+      <div class="sec-title" style="margin-bottom:6px">Keep a copy for your records</div>
+      <p class="rubric" style="margin-bottom:12px">Your test has been automatically saved to your teacher's database. You may export a PDF or email a copy for your own records.</p>
+      <div class="send-row">
+        <button class="btn btn-primary" id="pdfBtn">⭳ Export PDF report</button>
+        <button class="btn btn-ghost" id="mailBtn">✉ Email a copy</button>
+        <button class="btn btn-ghost" id="copyBtn">⧉ Copy report text</button>
+      </div>
+      <div class="send-row" style="margin-top:12px">
+        <span style="font-size:13px;color:var(--muted)">Teacher:</span>
+        <span class="teacher-pill" id="teacherPill">huongstella8@gmail.com</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ACTION BAR -->
+<div class="actionbar no-print" id="actionbar" hidden>
+  <div class="actionbar-inner">
+    <div class="hint" id="submitHint">Complete the checklist to finish.</div>
+    <button class="btn btn-primary" id="finishBtn" disabled>Finish &amp; Assess Essay</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var TEACHER = "huongstella8@gmail.com";
+  var TOTAL = 40*60;                 
+  var KEY = "ielts_t2_u5_ex10_v1";   
+  var $ = function(id){return document.getElementById(id);};
+
+  // ---------------------------------------------------------
+  // IMPORTANT: REPLACE WITH YOUR GOOGLE APPS SCRIPT URL
+  // ---------------------------------------------------------
+  var ASSESSMENT_ENDPOINT = "YOUR_WEB_APP_URL_HERE";
+
+  var state = {
+    name:"", email:"", essay:"", attempts: 0,
+    checks:[false,false,false,false,false,false,false,false],
+    remaining:TOTAL, started:false, submitted:false, theme:null
+  };
+
+  var checklistItems = [
+    {t:"I answered the question fully.", k:"Task achievement"},
+    {t:"I wrote at least 250 words.", k:"Task achievement"},
+    {t:"I gave my own opinion / position clearly.", k:"Task achievement"},
+    {t:"I organised my essay in clear paragraphs.", k:"Coherence & cohesion"},
+    {t:"I used referencing and linking words properly.", k:"Coherence & cohesion"},
+    {t:"I supported my ideas with reasons and examples.", k:"Task achievement"},
+    {t:"I used a range of vocabulary with precise collocations.", k:"Lexical resource"},
+    {t:"I checked my grammar, sentence structure and punctuation.", k:"Grammar"}
+  ];
+
+  /* ---------- storage ---------- */
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); return true; }catch(e){ return false; }
+  }
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){ var s = JSON.parse(raw); for(var k in s){ if(s.hasOwnProperty(k)) state[k]=s[k]; } }
+    }catch(e){}
+  }
+
+  /* ---------- theme ---------- */
+  function applyTheme(){
+    if(state.theme==="dark") document.documentElement.setAttribute("data-theme","dark");
+    else if(state.theme==="light") document.documentElement.setAttribute("data-theme","light");
+    else document.documentElement.removeAttribute("data-theme");
+  }
+  $("themeBtn").addEventListener("click", function(){
+    var cur = document.documentElement.getAttribute("data-theme");
+    var isDark = cur==="dark" || (!cur && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    state.theme = isDark ? "light" : "dark";
+    applyTheme(); save();
+  });
+
+  /* ---------- word count ---------- */
+  function wordCount(txt){
+    var t = (txt||"").trim();
+    if(!t) return 0;
+    return t.split(/\s+/).filter(Boolean).length;
+  }
+
+  function refreshLive() {
+    var wc = wordCount(state.essay);
+    $("wc").textContent = wc;
+    var box = $("wcBox");
+    box.className = "wc" + (wc >= 250 ? " ok" : (wc > 0 ? " low" : ""));
+    
+    if(!state.submitted) {
+      $("liveBand").textContent = "Est. band —";
+      $("liveHint").textContent = wc >= 250 ? "You've passed 250 words. Ready to submit." : 
+        (wc > 0 ? "Keep going — " + (250 - wc) + " words to reach the minimum." : "Write at least 250 words.");
+    }
+  }
+
+  /* ---------- render checklist ---------- */
+  var clEl=$("checklist");
+  checklistItems.forEach(function(it,idx){
+    var lab=document.createElement("label");
+    lab.className="check-item";
+    lab.innerHTML='<input type="checkbox" data-i="'+idx+'"><span class="ct">'+it.t+'<span class="ck">'+it.k+'</span></span>';
+    clEl.appendChild(lab);
+  });
+  var boxes=clEl.querySelectorAll('input[type=checkbox]');
+  boxes.forEach(function(b){
+    b.addEventListener("change",function(){
+      state.checks[+b.getAttribute("data-i")]=b.checked;
+      save(); refreshChecks();
+    });
+  });
+  function refreshChecks(){
+    var n=state.checks.filter(Boolean).length;
+    $("checkCount").textContent=n;
+    updateFinishBtn();
+  }
+
+  /* ---------- validation & finish button ---------- */
+  function emailValid(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
+  function updateFinishBtn(){
+    var allChecks=state.checks.every(Boolean);
+    var hasName=state.name.trim().length>0;
+    var okEmail=emailValid(state.email.trim());
+    var wcOk=wordCount(state.essay)>0;
+    var ready=allChecks&&hasName&&okEmail&&wcOk&&!state.submitted;
+    var btn=$("finishBtn");
+    btn.disabled=!ready;
+    var msg=[];
+    if(!hasName)msg.push("add your name");
+    if(!okEmail)msg.push("add a valid email");
+    if(!wcOk)msg.push("write your essay");
+    if(!allChecks)msg.push("complete the checklist ("+state.checks.filter(Boolean).length+"/8)");
+    
+    $("submitHint").textContent = state.submitted ? "Test submitted and saved." :
+      (msg.length? "To finish: "+msg.join(", ")+"." : "Ready — click Finish to submit your essay.");
+  }
+
+  /* ---------- autosave ---------- */
+  var saveTimer=null, lastEssay="";
+  function markSaved(ok){
+    var dot=$("saveDot");
+    if(ok){ dot.classList.remove("saving"); var d=new Date();
+      $("saveTxt").textContent="Saved "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")+":"+String(d.getSeconds()).padStart(2,"0");
+    } else { $("saveTxt").textContent="Saving unavailable"; }
+  }
+  function autosave(){
+    var ok=save(); markSaved(ok);
+  }
+  setInterval(function(){ if(state.started&&!state.submitted) autosave(); }, 10000);
+
+  /* ---------- timer ---------- */
+  var tick=null;
+  function fmt(s){var m=Math.floor(s/60),ss=s%60;return String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0");}
+  function renderTimer(){
+    var el=$("timer"); el.textContent=fmt(Math.max(0,state.remaining));
+    el.classList.remove("warn","danger");
+    if(state.remaining<=60)el.classList.add("danger");
+    else if(state.remaining<=300)el.classList.add("warn");
+  }
+  function startTimer(){
+    if(tick)return;
+    tick=setInterval(function(){
+      if(state.submitted){clearInterval(tick);tick=null;return;}
+      state.remaining--;
+      if(state.remaining<=0){state.remaining=0;renderTimer();autosave();doFinish(true);clearInterval(tick);tick=null;return;}
+      renderTimer();
+      if(state.remaining%5===0)save();
+    },1000);
+  }
+  function timeUsedStr(){
+    var used=TOTAL-Math.max(0,state.remaining);
+    var m=Math.floor(used/60),s=used%60;
+    return m+" min "+String(s).padStart(2,"0")+" s";
+  }
+
+  /* ---------- submission & api call ---------- */
+  function doFinish(auto){
+    if(state.submitted)return;
+    if(!auto){
+      if(!state.checks.every(Boolean)||!state.name.trim()||!emailValid(state.email.trim())||wordCount(state.essay)===0)return;
+    }
+    state.submitted=true; 
+    state.attempts += 1;
+    save();
+    
+    $("essay").disabled=true;
+    $("finishBtn").style.display="none";
+    updateFinishBtn();
+    
+    if(auto) toast("Time is up — your test was submitted automatically.");
+    
+    // Prepare UI for loading
+    $("reportSection").style.display="block";
+    $("reportSection").scrollIntoView({behavior:"smooth",block:"start"});
+    
+    var cw = $("critWrap");
+    cw.innerHTML = "<div style='color:var(--accent); font-weight:600;'>The AI Examiner is reading your essay. This takes about 15 seconds...</div>";
+    
+    var essayText = state.essay.trim();
+    var promptText = $("essayPrompt").textContent;
+    var wc = wordCount(essayText);
+
+    fetch(ASSESSMENT_ENDPOINT, {
+      method: "POST",
+      body: JSON.stringify({
+        prompt: promptText,
+        essay: essayText,
+        name: state.name.trim(),
+        email: state.email.trim(),
+        duration: timeUsedStr(),
+        attempts: state.attempts,
+        wordCount: wc
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      buildReport(data);
+    })
+    .catch(err => {
+      cw.innerHTML = "<div style='color:var(--bad);'>Assessment failed to load. Please try again later. Your teacher has been notified.</div>";
+      console.error(err);
+    });
+  }
+
+  function buildReport(llmResponse) {
+    $("reportStatus").innerHTML = "✓ Assessment complete. Results saved.";
+    $("rName").textContent=state.name.trim()||"—";
+    $("rEmail").textContent=state.email.trim()||"—";
+    var d=new Date();
+    $("rDate").textContent=d.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+    $("rTime").textContent=timeUsedStr();
+    
+    var wc=wordCount(state.essay);
+    $("rWords").textContent=wc+(wc>=250?" ✓":" (min 250)");
+
+    if (llmResponse && llmResponse.overall) {
+        $("rOverall").textContent = llmResponse.overall.toFixed(1);
+
+        var cw = $("critWrap");
+        cw.innerHTML = "";
+        var crit = [
+            { n: "Task Response", v: llmResponse.TR.calculated_band },
+            { n: "Coherence & Cohesion", v: llmResponse.CC.calculated_band },
+            { n: "Lexical Resource", v: llmResponse.LR.calculated_band },
+            { n: "Grammatical Range & Accuracy", v: llmResponse.GRA.calculated_band }
+        ];
+
+        crit.forEach(function(c) {
+            var row = document.createElement("div"); 
+            row.className = "crit-row";
+            row.innerHTML = '<span class="name">' + c.n + '</span><span class="val">' + c.v.toFixed(1) + '</span><div class="bar"><i style="width:' + (c.v / 9 * 100) + '%"></i></div>';
+            cw.appendChild(row);
+        });
+
+        var tl = $("tips");
+        tl.innerHTML = "";
+        var feedbackPoints = [
+            "<strong>Task Response:</strong> " + llmResponse.TR.examiner_feedback,
+            "<strong>Coherence & Cohesion:</strong> " + llmResponse.CC.examiner_feedback,
+            "<strong>Lexical Resource:</strong> " + llmResponse.LR.examiner_feedback,
+            "<strong>Grammar & Accuracy:</strong> " + llmResponse.GRA.examiner_feedback
+        ];
+        
+        feedbackPoints.forEach(function(t) {
+            var li = document.createElement("li");
+            li.innerHTML = t;
+            tl.appendChild(li);
+        });
+        
+        window._reportData = llmResponse;
+    }
+
+    var rc=$("rChecklist");rc.innerHTML="";
+    checklistItems.forEach(function(it,idx){
+      var li=document.createElement("li");
+      li.innerHTML=(state.checks[idx]?"✓ ":"✗ ")+it.t;
+      li.style.color=state.checks[idx]?"var(--good)":"var(--bad)";
+      rc.appendChild(li);
+    });
+    
+    $("rEssay").textContent=state.essay.trim()||"(no essay written)";
+  }
+
+  /* ---------- report text (for email/copy) ---------- */
+  function reportText(){
+    var d=new Date();
+    var L=[];
+    L.push("IELTS WRITING TASK 2 — AI REPORT");
+    L.push("========================================");
+    L.push("Candidate : "+(state.name.trim()||"—"));
+    L.push("Email     : "+(state.email.trim()||"—"));
+    L.push("Date      : "+d.toLocaleDateString());
+    L.push("Time used : "+timeUsedStr());
+    
+    var wc = wordCount(state.essay);
+    L.push("Words     : "+wc+(wc>=250?" (meets 250 minimum)":" (BELOW 250 minimum)"));
+    L.push("");
+
+    if (window._reportData) {
+        var r = window._reportData;
+        L.push("OVERALL BAND: "+r.overall.toFixed(1));
+        L.push("  - Task Response                : "+r.TR.calculated_band.toFixed(1));
+        L.push("  - Coherence & Cohesion         : "+r.CC.calculated_band.toFixed(1));
+        L.push("  - Lexical Resource             : "+r.LR.calculated_band.toFixed(1));
+        L.push("  - Grammatical Range & Accuracy : "+r.GRA.calculated_band.toFixed(1));
+        L.push("");
+        L.push("FEEDBACK:");
+        L.push("TR:  " + r.TR.examiner_feedback);
+        L.push("CC:  " + r.CC.examiner_feedback);
+        L.push("LR:  " + r.LR.examiner_feedback);
+        L.push("GRA: " + r.GRA.examiner_feedback);
+    } else {
+        L.push("Report data not yet available.");
+    }
+
+    L.push("");
+    L.push("TASK:");
+    L.push($("essayPrompt").textContent);
+    L.push("");
+    L.push("ESSAY:");
+    L.push(state.essay.trim()||"(no essay written)");
+    return L.join("\n");
+  }
+
+  /* ---------- toast ---------- */
+  var toastT=null;
+  function toast(msg){
+    var el=$("toast");el.textContent=msg;el.classList.add("show");
+    clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove("show");},3200);
+  }
+
+  /* ---------- buttons ---------- */
+  $("pdfBtn").addEventListener("click",function(){ window.print(); });
+  $("mailBtn").addEventListener("click",function(){
+    var overall = window._reportData ? window._reportData.overall.toFixed(1) : "Report";
+    var subj="IELTS Task 2 Practice — "+(state.name.trim()||"Student")+" — Est. band "+overall;
+    var body=reportText();
+    var href="mailto:"+encodeURIComponent(TEACHER)+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body);
+    if(href.length>1800){
+      var shortBody=reportText().slice(0,1200)+"\n\n...[report truncated — please attach the exported PDF]";
+      href="mailto:"+encodeURIComponent(TEACHER)+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(shortBody);
+    }
+    window.location.href=href;
+  });
+  $("copyBtn").addEventListener("click",function(){
+    var txt=reportText();
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){toast("Report text copied.");},
+        function(){fallbackCopy(txt);});
+    } else fallbackCopy(txt);
+  });
+  function fallbackCopy(txt){
+    var ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");toast("Report text copied.");}catch(e){toast("Could not copy manually.");}
+    document.body.removeChild(ta);
+  }
+
+  $("finishBtn").addEventListener("click",function(){ doFinish(false); });
+
+  /* ---------- inputs ---------- */
+  $("name").addEventListener("input",function(){state.name=this.value;save();updateFinishBtn();});
+  $("email").addEventListener("input",function(){
+    state.email=this.value;
+    this.classList.toggle("invalid", this.value.length>0&&!emailValid(this.value));
+    save();updateFinishBtn();
+  });
+  var essayEl=$("essay");
+  essayEl.addEventListener("input",function(){
+    state.essay=this.value;
+    refreshLive();updateFinishBtn();
+    if(this.value!==lastEssay){
+      lastEssay=this.value;
+      $("saveDot").classList.add("saving");$("saveTxt").textContent="Saving…";
+      clearTimeout(saveTimer);
+      saveTimer=setTimeout(function(){autosave();},900);
+    }
+    if(state.started) startTimer();
+  });
+
+  /* ---------- start ---------- */
+  function revealExam(){
+    $("examStage").hidden=false;
+    $("actionbar").hidden=false;
+    $("startCard").hidden=true;
+  }
+  $("startBtn").addEventListener("click",function(){
+    state.started=true;save();
+    revealExam();
+    startTimer();
+    $("essay").focus();
+  });
+
+  /* ---------- init ---------- */
+  function init(){
+    load(); applyTheme();
+    $("name").value=state.name||"";
+    $("email").value=state.email||"";
+    essayEl.value=state.essay||""; lastEssay=state.essay||"";
+    boxes.forEach(function(b){var i=+b.getAttribute("data-i");b.checked=!!state.checks[i];});
+    if(typeof state.remaining!=="number"||state.remaining>TOTAL) state.remaining=TOTAL;
+    if(typeof state.attempts!=="number") state.attempts = 0;
+    
+    renderTimer(); refreshChecks(); refreshLive(); updateFinishBtn();
+
+    if(state.submitted){
+      revealExam();
+      essayEl.disabled=true;
+      $("finishBtn").style.display="none";
+      $("reportSection").style.display="block";
+      $("submitHint").textContent="Test submitted and saved.";
+      
+      var cw = $("critWrap");
+      cw.innerHTML = "<div style='color:var(--muted); font-weight:500;'>Your test was submitted in a previous session. To take it again, clear your browser data.</div>";
+      
+    } else if(state.started){
+      revealExam();
+      startTimer();
+    }
+    
+    if(!save()) markSaved(false);
+  }
+  init();
+})();
+</script>
+</body>
+</html>
