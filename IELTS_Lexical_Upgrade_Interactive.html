@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lexical Upgrade Workbook</title>
+<style>
+:root{
+  --ink:#1f2937; --muted:#6b7280; --rule:#d5dae2; --bg:#f5f6f9; --card:#ffffff;
+  --u1:#2f5597; --u1l:#eaf0fa; --u2:#1e7f6d; --u2l:#e6f4f1;
+  --ok:#157347; --okl:#e3f4ea; --bad:#b42318; --badl:#fdecea; --warn:#9a6700; --warnl:#fff4d6;
+  --acc:#2f5597;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Calibri,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+
+/* ---------- start screen ---------- */
+#start{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.start-card{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:32px;max-width:560px;width:100%;box-shadow:0 6px 24px rgba(31,41,55,.07)}
+.kicker{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.start-card h1{margin:6px 0 4px;font-size:30px;line-height:1.15}
+.start-card .sub{color:var(--acc);font-size:18px;margin:0 0 20px}
+.start-card ul{margin:0 0 20px;padding-left:20px;color:#374151;font-size:15px}
+.start-card li{margin-bottom:4px}
+label.f{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+input.txt{width:100%;padding:11px 12px;border:1px solid #b9c0cc;border-radius:8px;background:#fff}
+input.txt:focus,textarea:focus,select:focus{outline:2px solid var(--acc);outline-offset:1px}
+.btn{border:0;border-radius:8px;padding:10px 18px;font-weight:600;cursor:pointer;background:var(--acc);color:#fff}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn:disabled{background:#c9ced8;color:#fff;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid #b9c0cc}
+.btn.ghost:hover:not(:disabled){background:#f1f3f7;filter:none}
+.btn.danger{background:#fff;color:var(--bad);border:1px solid #e3b4af}
+.btn.big{padding:12px 22px;font-size:16px}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:6px 0 0}
+.resume{background:var(--warnl);border:1px solid #ecd08a;border-radius:8px;padding:10px 12px;font-size:14px;margin-bottom:16px;display:none}
+
+/* ---------- app shell ---------- */
+#app{display:none}
+.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--rule)}
+.topbar .wrap{display:flex;align-items:center;gap:14px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:15px}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.spacer{flex:1}
+.pill{background:#f1f3f7;border:1px solid var(--rule);border-radius:999px;padding:4px 12px;font-size:14px;white-space:nowrap}
+.pill b{font-variant-numeric:tabular-nums}
+.progress{height:4px;background:#e6e9ef}
+.progress i{display:block;height:100%;width:0;background:var(--u2);transition:width .25s}
+.tabs{background:#fff;border-bottom:1px solid var(--rule)}
+.tabs .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:8px;padding-bottom:8px;scrollbar-width:thin}
+.tab{border:1px solid var(--rule);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;font-size:14px;font-weight:600;color:#374151}
+.tab[aria-selected=true]{color:#fff;border-color:transparent}
+.tab .dot{display:inline-block;min-width:34px;text-align:center;margin-left:6px;font-weight:500;font-size:12px;opacity:.85}
+main{padding:20px 0 80px}
+h2.lt{margin:0 0 4px;font-size:26px;line-height:1.2}
+.unit{color:var(--muted);font-weight:600;font-size:13px;margin-bottom:12px}
+.box{border-left:5px solid var(--acc);background:var(--u1l);border-radius:0 8px 8px 0;padding:12px 16px;margin:12px 0 18px}
+.box .t{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--acc);margin-bottom:4px}
+.box ol{margin:4px 0;padding-left:20px;font-style:italic;font-size:15px}
+.box .ref{font-size:12px;color:var(--muted);margin-top:4px}
+.bank{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px;margin:6px 0 4px}
+.bank span{background:var(--u1l);border:1px solid var(--rule);border-radius:6px;padding:6px 10px;font-weight:600;color:var(--acc);font-size:14px}
+.hint{font-size:13px;color:var(--muted);font-style:italic}
+h3.sec{margin:26px 0 4px;font-size:19px;color:var(--acc);border-bottom:2px solid var(--acc);padding-bottom:4px}
+.instr{color:var(--muted);font-style:italic;font-size:14px;margin:4px 0 10px}
+.item{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.item.done-ok{border-color:#9ad1b0}
+.item.done-bad{border-color:#eab0aa}
+.item .q{display:flex;gap:10px;margin-bottom:8px}
+.item .n{flex:none;width:26px;height:26px;border-radius:50%;background:#eef1f6;color:#4b5563;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.item .qt{font-size:16px}
+.item .qt u{font-weight:700;text-decoration-thickness:2px;text-underline-offset:3px}
+.item textarea,.item input.ans{width:100%;border:1px solid #b9c0cc;border-radius:8px;padding:9px 11px;background:#fff;resize:vertical}
+.item textarea{min-height:92px}
+.item input.ans[readonly],.item textarea[readonly]{background:#f4f5f8;color:#374151}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border:1px solid var(--rule);border-radius:8px;cursor:pointer;background:#fff}
+.opt:hover{background:#f7f9fc}
+.opt input{margin-top:5px}
+.opt.locked{cursor:default}
+.opt.locked:hover{background:#fff}
+.opt.is-correct{background:var(--okl);border-color:#8fcca8}
+.opt.is-wrong{background:var(--badl);border-color:#eba39b}
+.opts.inline{flex-direction:row;flex-wrap:wrap}
+.matchsel{padding:8px 10px;border:1px solid #b9c0cc;border-radius:8px;background:#fff;min-width:140px}
+.row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.lock{font-size:13px;color:var(--muted)}
+.sug{margin-top:10px;background:var(--okl);border-left:4px solid var(--ok);border-radius:0 8px 8px 0;padding:10px 14px}
+.sug .t{font-size:12px;font-weight:700;letter-spacing:.05em;color:var(--ok)}
+.sug .b{font-size:16px;font-weight:600;margin-top:2px;white-space:pre-wrap}
+.sug .why{font-size:14px;color:#374151;margin-top:4px;font-weight:400}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media (max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp .you{background:#f4f5f8;border-left:4px solid #8b94a5;border-radius:0 8px 8px 0;padding:10px 14px}
+.cmp .you .t{font-size:12px;font-weight:700;letter-spacing:.05em;color:#4b5563}
+.cmp .b{white-space:pre-wrap;margin-top:2px}
+.verdict{display:inline-block;font-size:13px;font-weight:700;border-radius:999px;padding:3px 10px}
+.verdict.ok{background:var(--okl);color:var(--ok)}
+.verdict.bad{background:var(--badl);color:var(--bad)}
+.verdict.mid{background:var(--warnl);color:var(--warn)}
+.rate{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.rate .lbl{font-size:13px;color:var(--muted)}
+.rate button{border:1px solid #b9c0cc;background:#fff;border-radius:999px;padding:5px 12px;cursor:pointer;font-size:13px;font-weight:600}
+.rate button[aria-pressed=true].r2{background:var(--okl);border-color:#8fcca8;color:var(--ok)}
+.rate button[aria-pressed=true].r1{background:var(--warnl);border-color:#e6cb7a;color:var(--warn)}
+.rate button[aria-pressed=true].r0{background:var(--badl);border-color:#eba39b;color:var(--bad)}
+.matchbank{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px;margin:8px 0 14px}
+.matchbank div{background:var(--u1l);border:1px solid var(--rule);border-radius:6px;padding:6px 10px;font-size:14px}
+.matchbank b{color:var(--acc);margin-right:6px}
+.finishbar{margin-top:34px;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.finishbar p{margin:0;flex:1;min-width:220px;font-size:14px;color:#374151}
+.nav{display:flex;justify-content:space-between;margin-top:22px;gap:10px}
+
+/* ---------- report ---------- */
+#reportView{display:none}
+.rep-actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.report{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:28px 30px;margin-bottom:60px}
+.report h1{margin:0 0 2px;font-size:24px}
+.report .sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px;border:1px solid var(--rule);border-radius:8px;padding:12px 16px;margin-bottom:16px}
+.meta div span{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.meta div b{font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:18px}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{border:1px solid var(--rule);border-radius:8px;padding:10px 12px;text-align:center}
+.stat b{display:block;font-size:22px;line-height:1.1}
+.stat span{font-size:12px;color:var(--muted)}
+.report h2{font-size:18px;margin:22px 0 6px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+.report h3{font-size:15px;margin:14px 0 6px;color:var(--acc)}
+table.sum{width:100%;border-collapse:collapse;font-size:14px}
+table.sum th{background:var(--ink);color:#fff;text-align:left;padding:6px 8px;font-weight:600}
+table.sum td{border:1px solid var(--rule);padding:6px 8px}
+.ri{border:1px solid var(--rule);border-radius:8px;padding:9px 12px;margin-bottom:8px;break-inside:avoid;page-break-inside:avoid;font-size:14px}
+.ri .h{display:flex;justify-content:space-between;gap:10px;margin-bottom:4px}
+.ri .h .qq{font-weight:600}
+.ri .l{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.ri .v{white-space:pre-wrap}
+.ri .v.sugv{color:var(--ok);font-weight:600}
+.ri .v.empty{color:var(--muted);font-style:italic}
+.ri .v u{font-weight:700}
+.gh{font-weight:700;font-size:13px;margin:10px 0 4px;break-after:avoid;page-break-after:avoid}
+.report h2,.report h3{break-after:avoid;page-break-after:avoid}
+.note{font-size:12px;color:var(--muted);margin-top:18px}
+
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  body{background:#fff;font-size:12px}
+  #start,#app>.topbar,#app>.progress,#app>.tabs,#mainView,.rep-actions,.noprint{display:none!important}
+  #app,#reportView{display:block!important}
+  .wrap{max-width:none;padding:0}
+  .report{border:0;padding:0;margin:0}
+  .meta,.stat,.ri{break-inside:avoid}
+  main{padding:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ START ============ -->
+<section id="start">
+  <div class="start-card">
+    <div class="kicker">HUONG STELLA PARADIGM · Writing Studio · IELTS Writing Task 2</div>
+    <h1>Lexical Upgrade Workbook</h1>
+    <p class="sub">Từ vựng đơn giản → cụm học thuật trang trọng</p>
+    <div class="resume" id="resumeNote"></div>
+    <ul>
+      <li>8 bài luyện (Unit 1 Education, Unit 2 Healthcare) và phần ôn tập tổng hợp, tổng cộng <b id="totalItems"></b> câu.</li>
+      <li>Điền câu trả lời trước. <b>Đáp án gợi ý chỉ mở sau khi bạn đã trả lời</b> câu đó và sẽ khóa câu trả lời lại để so sánh.</li>
+      <li>Thời gian làm bài được tính từ lúc bấm Bắt đầu đến lúc bấm Hoàn thành.</li>
+      <li>Cuối bài bạn có thể xuất báo cáo PDF gồm tên, ngày giờ, thời gian làm và so sánh chi tiết với đáp án.</li>
+    </ul>
+    <label class="f" for="nameIn">Họ và tên học viên</label>
+    <input class="txt" id="nameIn" type="text" autocomplete="name" placeholder="Ví dụ: Nguyễn Thu Hà">
+    <p class="err" id="startErr"></p>
+    <div class="row" style="margin-top:6px">
+      <button class="btn big" id="startBtn">Bắt đầu làm bài</button>
+      <button class="btn ghost" id="resumeBtn" style="display:none">Tiếp tục bài đang làm</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <div class="topbar">
+    <div class="wrap">
+      <div class="brand">Lexical Upgrade Workbook<small id="whoLbl"></small></div>
+      <div class="spacer"></div>
+      <div class="pill">Đã trả lời <b id="ansCnt">0</b>/<b id="totCnt">0</b></div>
+      <div class="pill">⏱ <b id="clock">00:00:00</b></div>
+      <button class="btn ghost" id="toReport">Báo cáo</button>
+    </div>
+  </div>
+  <div class="progress"><i id="bar"></i></div>
+  <div class="tabs"><div class="wrap" id="tabs" role="tablist"></div></div>
+
+  <div id="mainView"><main><div class="wrap" id="page"></div></main></div>
+
+  <div id="reportView"><div class="wrap">
+    <div class="rep-actions">
+      <button class="btn big" id="printBtn">Xuất báo cáo PDF</button>
+      <button class="btn ghost" id="backBtn">← Quay lại làm bài</button>
+    </div>
+    <p class="hint noprint" style="margin-top:-6px">Bấm “Xuất báo cáo PDF”, rồi trong hộp thoại in chọn <b>Lưu dưới dạng PDF</b> (Save as PDF).</p>
+    <div class="report" id="report"></div>
+  </div></div>
+</div>
+
+<script>
+const DATA = {"lessons":[{"id":"1.1","unit":1,"title":"Vocational training vs university","prompts":["Nations should spend more money on skills and vocational training for practical work, rather than on university education. To what extent do you agree or disagree? (16/09/2024 · 05/01/2025 · 15/11/2025)","More people should be encouraged to do vocational training because there is a lack of qualified workers such as electricians and plumbers. Do you agree or disagree? (Unit task)"],"refs":"Nguồn cụm từ: [MU-2] [MU-5] [INT-4]","bank":["allocate more funding to","cultivate analytical thinking","at the expense of universities","job-ready graduates","acquire job-specific skills","an acute shortage of skilled tradespeople","earn while they learn through workplace-based training","enter the job market swiftly"],"exA":[{"s":"There [[are not enough plumbers and electricians]], so repairs are late and costly.","ans":"is an acute shortage of skilled tradespeople","note":"There is (không phải There are); 'repairs are delayed and costly'."},{"s":"Vocational courses help young people [[get a job quickly]].","ans":"enter the job market swiftly"},{"s":"Students on these courses [[learn useful things for one job]].","ans":"acquire job-specific skills"},{"s":"University study [[makes students think well]], which is valuable in many professions.","ans":"cultivates analytical thinking"},{"s":"Apprentices can [[learn while they work]] in local companies.","ans":"earn while they learn through workplace-based training"},{"s":"The government should [[give more money to]] vocational colleges.","ans":"allocate more funding to"},{"s":"Vocational colleges produce [[graduates who can start work at once]].","ans":"job-ready graduates"},{"s":"Funding for vocational training should not rise [[by cutting university budgets]].","ans":"at the expense of universities"}],"exB":[{"q":"Many young people choose to do an ___ with a local business.","opts":["apprentice","apprenticeship","apprenticed","apprenticing"],"ans":1,"why":"apprenticeship = chương trình đào tạo (danh từ); apprentice = người học việc."},{"q":"There ___ a shortage of qualified workers in the construction sector.","opts":["have","are","is","be"],"ans":2,"why":"shortage là danh từ số ít → There is."},{"q":"Governments should ___ more funding to vocational colleges.","opts":["make","allocate","do","put on"],"ans":1,"why":"collocation: allocate funding to."},{"q":"Universities ___ critical thinking skills.","opts":["grow","cultivate","raise","make"],"ans":1,"why":"cultivate / foster / develop + skills."},{"q":"Graduates of vocational courses are often ___ for work.","opts":["job-readied","job-ready","ready-job","jobs-ready"],"ans":1,"why":"job-ready: tính từ ghép."},{"q":"Many rural students ___ access to well-qualified teachers.","opts":["are lack of","lack of","lack","are lacking of"],"ans":2,"why":"lack là ngoại động từ; không dùng 'be lack of'."}],"exC":{"para":"Vocational training is good for the country. There are not enough plumbers and electricians, so people wait a long time and pay a lot of money. Vocational courses let young people learn useful things and get a job quickly. So the government should give more money to these courses, but not stop giving money to universities.","model":"Vocational training deserves greater public investment, chiefly because of the acute shortage of skilled tradespeople, which leaves households waiting for essential repairs and paying inflated prices. By enabling young people to acquire job-specific skills, such courses allow them to enter the job market swiftly. Governments should therefore allocate more funding to vocational colleges, though not at the expense of universities."},"exD":[{"task":"Prompt 1. Viết câu luận điểm 'partly agree' dùng allocate … funding và not at the expense of.","model":"I partly agree that governments should allocate more funding to vocational training, provided that this is not done at the expense of universities."},{"task":"Prompt 2. Viết câu chủ đề (topic sentence) cho Body 1 dùng acute shortage.","model":"The most compelling reason to expand vocational training is the acute shortage of skilled tradespeople."}]},{"id":"1.2","unit":1,"title":"Online learning vs face-to-face teaching","prompts":["More and more universities are replacing face-to-face teaching with online courses. Do you think this is a positive or negative development? (02/03/2025)","The typical teaching situation between students and teachers in the classroom will be gone by the year 2050. To what extent do you agree or disagree? (10/10/2025)"],"refs":"Nguồn cụm từ: [A-1]–[A-3] [B-1] [B-2] [C-2] [D-1] [D-2] [D-3]","bank":["study flexibly, unconstrained by time or location","find it hard to tailor teaching to individual learners' needs","collaborative interaction with their peers","be reliant on stable internet access","a viable alternative to campus study","forgo the personal relationship with their tutors","demonstrate strong self-discipline and intrinsic motivation","a product of the digital age"],"exA":[{"s":"Online degrees have become [[a good choice]] for those who cannot attend campus.","ans":"a viable alternative"},{"s":"Distance learners can [[study at any time and in any place]].","ans":"study flexibly, unconstrained by time or location"},{"s":"In online classes, teachers [[do not know what each student needs]].","ans":"find it hard to tailor teaching to individual learners' needs"},{"s":"On campus, students enjoy [[talking with their friends]] on the same course.","ans":"collaborative interaction with their peers"},{"s":"Distance learning suits students who are [[very motivated]].","ans":"highly motivated and self-disciplined"},{"s":"Online learning [[needs good internet]], which some rural students lack.","ans":"is reliant on stable internet access"},{"s":"Many people think online study is [[a new idea]].","ans":"a modern phenomenon"},{"s":"Without face-to-face contact, students [[lose the personal link]] they could have with tutors.","ans":"forgo the personal relationship"}],"exB":[{"q":"___ online courses are flexible, they require a high level of motivation.","opts":["Despite","Although","However","But"],"ans":1,"why":"Although + mệnh đề; không dùng 'Although … but'."},{"q":"Technological advances ___ meant that online courses now rival campus teaching.","opts":["has","have","is","are"],"ans":1,"why":"advances (số nhiều) → have meant."},{"q":"There is a significant difference ___ virtual and real interaction.","opts":["among","between","of","on"],"ans":1,"why":"difference between X and Y."},{"q":"Online learning makes it hard ___ teachers to understand learners' needs.","opts":["to","for","of","with"],"ans":1,"why":"make it hard for sb to do sth."},{"q":"Distance learning is not restricted ___ geography.","opts":["with","from","by","to"],"ans":2,"why":"be restricted by."},{"q":"Many students prefer face-to-face teaching ___ it offers personal contact.","opts":["so","since","despite","although"],"ans":1,"why":"since = bởi vì (nêu lý do); despite + danh từ; although chỉ tương phản."}],"exC":{"para":"Online courses are good for some people because they can study any time and any place. But students need to talk with their friends and teachers. If universities use only online courses, teachers do not know what students need and students lose their personal link with teachers. So I think this is a bad development.","model":"Admittedly, online courses have become a viable alternative to campus study, as learners can study flexibly, unconstrained by time or location. However, replacing face-to-face teaching entirely would be detrimental. Students would forgo the personal relationship they develop with tutors, who in turn would find it hard to tailor teaching to individual learners' needs. I therefore regard this development as largely negative."},"exD":[{"task":"Prompt 1. Viết câu nền (background) mở bài dùng Although … a modern phenomenon và has been around (không dùng 'but').","model":"Although online learning is often regarded as a modern phenomenon, distance education has been around for at least 200 years."},{"task":"Prompt 1. Viết câu chủ đề nhượng bộ cho Body 1 dùng rival … as a credible alternative.","model":"Admittedly, technological advances have enabled online courses to rival campus teaching as a credible alternative."}]},{"id":"1.3","unit":1,"title":"Funding, access and adult literacy","prompts":["Some people believe that governments should pay full course fees for students who want to study in universities. Do you agree or disagree with this statement? (04/10/2025 · 08/02/2026)","Despite better access to education, many adults today still cannot read or write. In what ways are they disadvantaged? What can governments do to help them? (02/10/2025 · 07/03/2026)"],"refs":"Nguồn cụm từ: [MU-3] [B-2] [D-3]","bank":["students from low-income backgrounds","targeted financial support","shoulder the full cost of their studies","mobile-based courses accessible to remote communities","place a heavy burden on taxpayers","community-based literacy programmes","a lack of basic literacy","soaring tuition fees","prevent them from completing job applications"],"exA":[{"s":"[[University fees are too high for many families]].","ans":"Soaring tuition fees are beyond the reach of many families"},{"s":"[[Poor students]] often abandon their studies for financial reasons.","ans":"Students from low-income backgrounds"},{"s":"Some argue that students should [[pay all the cost of]] their own degrees.","ans":"shoulder the full cost of"},{"s":"A fairer approach is to give [[help with money]] to those most in need.","ans":"targeted financial support"},{"s":"Many adults [[cannot read well]] even though schools are available.","ans":"lack basic literacy"},{"s":"This [[means they cannot fill in]] job applications.","ans":"prevents them from completing"},{"s":"Governments can offer [[free evening classes]] in local areas.","ans":"community-based literacy programmes"},{"s":"Mobile courses are useful because they are [[available everywhere]].","ans":"accessible to remote communities"}],"exB":[{"q":"Tuition fees are too ___ for many families.","opts":["expensive","high","costly","dear"],"ans":1,"why":"fees đi với high / low, không dùng 'expensive'."},{"q":"Governments should ___ financial support to those in need.","opts":["make","provide","do","bring"],"ans":1,"why":"provide support (for / to)."},{"q":"Many adults ___ basic literacy.","opts":["are lack of","lack of","lack","lacking of"],"ans":2,"why":"lack + danh từ (ngoại động từ)."},{"q":"Illiteracy ___ adults from completing job applications.","opts":["prevents","stops to","avoids","blocks"],"ans":0,"why":"prevent sb from + V-ing."},{"q":"A university degree no longer guarantees a ___ job.","opts":["high salary","well-paid","salary-high","highly salary"],"ans":1,"why":"well-paid: tính từ bổ nghĩa cho job."},{"q":"Many students ___ a bursary to cover living costs.","opts":["ask","apply for","request","demand"],"ans":1,"why":"apply for a bursary / scholarship."}],"exC":{"para":"Many adults cannot read well. This means they cannot fill in job applications, so they get low pay. Governments should give free evening classes and also online lessons that people can use anywhere.","model":"Many adults still lack basic literacy, which prevents them from completing job applications and confines them to low-paid work. To tackle this, governments could fund community-based literacy programmes and mobile-based courses that are not restricted by geography, enabling learners to progress at their own pace."},"exD":[{"task":"Prompt 1. Viết câu 'giải pháp trung gian' dùng scholarships and bursaries và particularly for.","model":"A more sustainable alternative would be to offer scholarships and bursaries, particularly for students from low-income backgrounds."},{"task":"Prompt 1. Viết câu nêu hạn chế của việc miễn phí học phí dùng place a heavy burden on.","model":"Funding every student's degree would place a heavy burden on taxpayers."}]},{"id":"1.4","unit":1,"title":"Curriculum, teachers and classrooms","prompts":["Some people believe that children should study all subjects at school, while others think they should only study subjects they are good at or find interesting. Discuss both views and give your opinion. (16/02/2024)","Nowadays, children find it difficult to concentrate or pay attention in school. What are the causes of this problem? What solutions can be suggested? (17/03/2025)","Once children start school, teachers have more influence on their intellectual and social development. To what extent do you agree or disagree? (01/09/2026)"],"refs":"Nguồn cụm từ: [C-1] [C-2] [MU-2] · Mở rộng: nhóm D (Curriculum) và E (Teachers) của ngân hàng đề","bank":["practical life skills such as cookery and financial literacy","struggle to maintain concentration","lose interest in lessons","smaller class sizes that allow individualised attention","place excessive emphasis on examination results","exert a profound influence on pupils' development","compel pupils to","a broad, well-rounded curriculum"],"exA":[{"s":"Schools should [[teach many subjects]] so that children can discover their talents.","ans":"offer a broad, well-rounded curriculum"},{"s":"[[Learning to cook and manage money]] should be part of school life.","ans":"Practical life skills such as cookery and financial literacy"},{"s":"Some schools [[only care about exams]].","ans":"place excessive emphasis on examination results"},{"s":"When lessons are one-way lectures, pupils [[get bored]].","ans":"lose interest in lessons"},{"s":"Many children [[cannot focus]] in class because of screens.","ans":"struggle to maintain concentration"},{"s":"[[Small classes let teachers help every pupil]].","ans":"Smaller class sizes enable teachers to give each pupil individualised attention"},{"s":"Teachers [[have a big effect on]] children's development.","ans":"exert a profound influence on"},{"s":"Schools should not [[make students]] learn a language they have no talent for.","ans":"compel pupils to","note":"learn đứng ngay sau, nên dùng 'compel pupils to learn'."}],"exB":[{"q":"Schools should not ___ students to learn a language if they lack natural ability.","opts":["force","make","let","push for"],"ans":0,"why":"force sb to V; 'make' cần động từ nguyên mẫu không 'to'."},{"q":"Children nowadays find it hard ___ concentrate.","opts":["to","for","of","at"],"ans":0,"why":"find it hard to + V."},{"q":"The number of students choosing science ___ falling.","opts":["are","is","have","be"],"ans":1,"why":"the number of → động từ số ít."},{"q":"Schools should ___ more attention to practical life skills.","opts":["do","pay","take","spend"],"ans":1,"why":"pay attention to."},{"q":"Teachers are responsible ___ helping students understand the key components.","opts":["to","for","of","with"],"ans":1,"why":"be responsible for + V-ing."},{"q":"A broad curriculum ___ students discover their talents.","opts":["allows","enables","lets","permits"],"ans":2,"why":"let + O + V nguyên mẫu; allow / enable / permit cần 'to'."}],"exC":{"para":"Many schools only care about exams, so students get bored and cannot focus. Teachers should teach many subjects and also life skills like cooking and managing money. Small classes are also good because teachers can help every student.","model":"Many schools place excessive emphasis on examination results, causing pupils to lose interest in lessons and struggle to maintain concentration. A broad, well-rounded curriculum that includes practical life skills, such as cookery and financial literacy, would sustain their engagement. Moreover, smaller class sizes enable teachers to give each pupil individualised attention."},"exD":[{"task":"Prompt 1 (Discussion). Viết câu đầu Body 1 dùng Those who believe … argue that … và a broad, well-rounded curriculum.","model":"Those who believe that children should study every subject argue that a broad, well-rounded curriculum allows pupils to discover talents they might otherwise never uncover."},{"task":"Prompt 1 (Discussion). Viết câu nêu ý kiến cá nhân dùng Personally, I side with … và electives.","model":"Personally, I side with a compulsory core of subjects combined with electives, since this balances breadth with personal interest."}]},{"id":"2.1","unit":2,"title":"Public vs private healthcare","prompts":["Some people think that good health is very important to every person, so medical services should not be run by profit-making companies. Do the advantages of private health care outweigh the disadvantages? (07/07/2024 · 16/03/2025 · 17/10/2025)","In many countries, good schools and medical facilities are available only in cities. Some people think newly qualified teachers and doctors should be required to work in rural areas for a few years, while others think they should be free to choose where they work. Discuss both views and give your opinion. (14/01/2025)"],"refs":"Nguồn cụm từ: [HC-2]–[HC-9]","bank":["automatically deducted at source","superior standards of care and shorter waiting times","take out health insurance to cover potential medical costs","universal, publicly funded healthcare irrespective of ability to pay","place unsustainable strain on public finances","spiralling healthcare costs","be priced out of essential care","provide financial assistance through a social safety net"],"exA":[{"s":"Public systems provide [[free hospital care for everyone]].","ans":"universal, publicly funded healthcare irrespective of ability to pay"},{"s":"However, such systems [[cost the government too much]].","ans":"place unsustainable strain on public finances"},{"s":"In a purely private system, [[poor people cannot get treatment]].","ans":"low-income patients are priced out of essential care"},{"s":"Private hospitals often [[give better service]].","ans":"provide superior standards of care"},{"s":"Some governments [[give money to poor patients]].","ans":"provide financial assistance to patients who cannot afford urgent treatment"},{"s":"In wealthier countries, most people [[buy insurance]].","ans":"take out health insurance to cover potential medical costs"},{"s":"Contributions are [[taken from workers' pay]].","ans":"automatically deducted from salaries"},{"s":"[[Healthcare costs more and more]] as people live longer.","ans":"Healthcare costs are spiralling"}],"exB":[{"q":"Most citizens ___ out health insurance.","opts":["make","take","do","buy"],"ans":1,"why":"take out insurance."},{"q":"Contributions are ___ from salaries automatically.","opts":["deducted","reduced","lowered","shortened"],"ans":0,"why":"deduct sth from."},{"q":"Without a safety net, the poor are deprived ___ essential care.","opts":["from","of","in","with"],"ans":1,"why":"be deprived of."},{"q":"Healthcare may be paid for ___ the government.","opts":["with","to","by","from"],"ans":2,"why":"bị động: be paid for by."},{"q":"Not only ___ individuals deprived of care, but diseases also spread.","opts":["are","do","is","have"],"ans":0,"why":"Not only + are + chủ ngữ (đảo ngữ)."},{"q":"The advantage ___ such systems is clear.","opts":["at","of","from","for"],"ans":1,"why":"the advantage of."}],"exC":{"para":"Private hospitals have some good points and bad points. They give better service, but poor people cannot pay so they can't get treatment. Also diseases can spread because there is no prevention. So I think the bad points are more.","model":"Admittedly, private hospitals can offer a higher quality of care provision, with shorter waiting times. However, these benefits are outweighed by the drawbacks. Not only are low-income patients priced out of essential treatment, but the neglect of preventive medicine also allows infectious diseases to spread. On balance, I believe the disadvantages outweigh the advantages."},"exD":[{"task":"Prompt 1. Viết câu luận điểm có verdict rõ ràng dùng outweighed by.","model":"Although private healthcare can offer shorter waiting times and higher standards, I believe these benefits are outweighed by the risk that low-income patients will be denied essential care."},{"task":"Prompt 1. Viết câu đảo ngữ Not only … but … also … cho Body 2 (tự chọn ý).","model":"Not only are low-income patients priced out of treatment, but untreated infections can also spread to the wider community."}]},{"id":"2.2","unit":2,"title":"Prevention: individual or government?","prompts":["Avoiding preventable illnesses is the responsibility of individuals and their families, not governments. Do you agree? (Unit task)","Some people believe that governments should spend more money on promoting a healthy lifestyle in order to prevent illness than on treating people who are already ill. To what extent do you agree or disagree? (05/07/2025 · 01/02/2026)"],"refs":"Nguồn cụm từ: [PR-1] [PR-2] [HC-4] [HC-6]","bank":["conflicting health guidance","cost-effective in the long term","be swayed by aggressive marketing of processed food","public health education campaigns","cannot afford gym memberships","make their own lifestyle choices","lifestyle is a key determinant of health","preventive healthcare","assume responsibility for their own health","place a heavy burden on public finances"],"exA":[{"s":"Treating chronic illness [[costs governments a lot of money]].","ans":"places a heavy burden on public finances"},{"s":"Evidence suggests that [[how people live decides their health]].","ans":"lifestyle is a key determinant of health"},{"s":"People should be free to [[choose how to live]].","ans":"make their own lifestyle choices"},{"s":"If people [[do not take care of themselves]], they may lose the ability to make good choices.","ans":"fail to assume responsibility for their own health"},{"s":"Many people [[are tempted by adverts for junk food]].","ans":"are swayed by aggressive marketing of processed food"},{"s":"Low-income families [[cannot pay for gyms]].","ans":"cannot afford gym memberships"},{"s":"People are confused because [[health advice keeps changing]].","ans":"health guidance is often conflicting"},{"s":"Preventing illness is [[cheaper than treating it]].","ans":"cost-effective in the long term"}],"exB":[{"q":"Governments should invest more ___ preventative medicine.","opts":["on","in","for","to"],"ans":1,"why":"invest in."},{"q":"Medical evidence strongly ___ that lifestyle affects health.","opts":["suggests","suggest","suggesting","is suggest"],"ans":0,"why":"evidence (không đếm được) → suggests."},{"q":"People get ___ by advertising for junk food.","opts":["tempted","temptation","tempting","tempt"],"ans":0,"why":"get + quá khứ phân từ (bị động)."},{"q":"Health advice changes ___ frequently that people get confused.","opts":["such","so","too","very"],"ans":1,"why":"so + trạng từ + that."},{"q":"___ many people want to eat healthily, they cannot afford fresh food.","opts":["Despite","Although","However","In spite"],"ans":1,"why":"Although + mệnh đề."},{"q":"Many diseases can be ___ if people are vaccinated.","opts":["prevent","prevented","preventing","prevention"],"ans":1,"why":"can be + quá khứ phân từ."}],"exC":{"para":"Governments should spend more money on preventing illness than on treating sick people. People who sit all day and eat junk food get sick, and treatment is very expensive. Some people cannot pay for gyms or healthy food, so the government should help them and teach people about health.","model":"Governments should prioritise preventive healthcare, since treating chronic illness places a heavy burden on public finances, whereas prevention is cost-effective in the long term. Because lifestyle is a key determinant of health, authorities should address the barriers that individuals cannot overcome alone, such as aggressive marketing of processed food and the cost of gym memberships, through public health education campaigns."},"exD":[{"task":"Prompt 1. Viết câu luận điểm 'largely disagree' dùng Although … (concession).","model":"Although individuals bear responsibility for many of their lifestyle choices, I largely disagree that governments have no role, since many causes of ill health lie beyond personal control."},{"task":"Prompt 1. Viết câu chuyển từ nhượng bộ sang phản biện dùng Nevertheless và swayed by.","model":"Nevertheless, many people who wish to eat healthily are swayed by aggressive marketing of processed food, which suggests that personal willpower alone is insufficient."}]},{"id":"2.3","unit":2,"title":"Diet, exercise and lifestyle","prompts":["Scientists have shown that some activities are good for our health and others are bad for it. However, many people continue to do things that are harmful to their health. Why do they do this? What can be done to encourage them to live more healthily? (28/09/2024)","Many doctors advise elderly people to exercise regularly, but most patients do not follow this advice. What are the causes of this? What can be done to solve this problem? (10/07/2026)","Some people think the government should subsidise fruit and vegetables to make healthy food more affordable. Others think the government should tax unhealthy food instead. Discuss both views and give your opinion. (05/09/2025 · 23/11/2025)"],"refs":"Nguồn cụm từ: [PR-2] [CON-1] [HC-6] · Mở rộng: nhóm C (Diet, exercise & lifestyle) của ngân hàng đề","bank":["inexpensive, readily available processed food","subsidise fresh produce to make healthy eating affordable","impose a levy on sugary drinks","be deterred by the fear of injury","rising rates of childhood obesity","underestimate the long-term health risks","elderly patients fail to heed medical advice","accessible public sports facilities","lead an increasingly sedentary lifestyle"],"exA":[{"s":"Many office workers [[sit all day]].","ans":"lead a sedentary lifestyle"},{"s":"[[Many children are becoming fat]].","ans":"Rates of childhood obesity are rising"},{"s":"Fast food is popular because it is [[cheap and easy to get]].","ans":"inexpensive and readily available"},{"s":"Many people [[do not understand the dangers]] of an unhealthy diet in the long run.","ans":"underestimate the long-term health risks"},{"s":"Governments could [[put a tax on]] sugary drinks.","ans":"impose a levy on"},{"s":"Governments could [[make fruit and vegetables cheaper]].","ans":"subsidise fresh produce to make healthy eating affordable"},{"s":"Many elderly people [[do not follow doctors' advice]] to exercise.","ans":"fail to heed medical advice"},{"s":"Some seniors [[are afraid they will hurt themselves]].","ans":"are deterred by the fear of injury"}],"exB":[{"q":"A sedentary lifestyle ___ to obesity.","opts":["leads","makes","causes","brings"],"ans":0,"why":"lead to; 'cause' không đi với 'to'."},{"q":"Children should ___ regular exercise.","opts":["make","do","play","have a"],"ans":1,"why":"do / take regular exercise."},{"q":"Rising obesity ___ a serious threat to public health.","opts":["gives","poses","makes","brings"],"ans":1,"why":"pose a threat to."},{"q":"Governments should prevent companies ___ junk food to children.","opts":["to advertise","from advertising","advertise","for advertising"],"ans":1,"why":"prevent sb from + V-ing."},{"q":"Eating ___ is the key to a long life.","opts":["health","healthy","healthily","healthful"],"ans":2,"why":"eating + trạng từ healthily."},{"q":"Many people ___ the long-term risks of smoking.","opts":["underestimate","understate to","lower","decrease"],"ans":0,"why":"underestimate + risks."}],"exC":{"para":"Many people sit all day and eat cheap junk food. They don't know the long-term dangers, so more children become fat. The government can put a tax on junk food and make fruit cheaper, and build free places to exercise.","model":"A sedentary lifestyle and a diet of inexpensive, readily available processed food are fuelling rising rates of childhood obesity, partly because many people underestimate the long-term health risks. Governments could impose a levy on unhealthy food, subsidise fresh produce to make healthy eating affordable, and provide accessible public sports facilities."},"exD":[{"task":"Prompt 2. Viết câu nguyên nhân dùng Even though + mệnh đề và deterred by the fear of injury.","model":"Even though doctors repeatedly stress the benefits of exercise, many elderly patients are deterred by the fear of injury and the lack of safe spaces to be active."},{"task":"Prompt 2. Viết câu giải pháp dùng It is essential to … rồi câu kết quả bắt đầu bằng This would.","model":"It is essential to organise supervised group activities in community centres. This would reduce isolation and give older people the confidence to exercise safely."}]},{"id":"2.4","unit":2,"title":"Online health information, mental health and sport","prompts":["Nowadays, many people use the Internet to get medical advice instead of going to see a doctor. Why is this? Is this a positive or negative development? (02/11/2024 · 22/03/2025)","Many children spend a lot of time watching television and playing video games. Some people think that this is not good for a child's mental health. To what extent do you agree or disagree? (14/08/2024 · 20/04/2026)","Some people believe that the government should ban dangerous or extreme sports. Others think people should be free to choose any sports or activities they want. Discuss both views and give your opinion. (13/01/2024 · 28/04/2025 · 16/07/2026)"],"refs":"Nguồn cụm từ: [HC-5] [PR-2] · Mở rộng: nhóm D (Health information, mental health & sport) của ngân hàng đề","bank":["detrimental to mental wellbeing","excessive screen time","treatable conditions deteriorate","intense performance-related pressure","delay seeking professional medical attention","unreliable medical information","rescue and medical costs borne by taxpayers","high-risk activities","turn to online sources for medical advice","cost-free and instantly accessible"],"exA":[{"s":"Many people [[use the Internet to get medical advice]].","ans":"turn to online sources for medical advice"},{"s":"Online advice is [[free and quick]].","ans":"cost-free and instantly accessible"},{"s":"The Internet may give [[wrong information]].","ans":"unreliable medical information"},{"s":"Some patients [[wait too long to see a doctor]].","ans":"delay seeking professional medical attention"},{"s":"As a result, [[simple illnesses become worse]].","ans":"treatable conditions deteriorate"},{"s":"Children who have [[too much time on screens]] may sleep less.","ans":"excessive screen time"},{"s":"This can be [[bad for]] their mental health.","ans":"detrimental to"},{"s":"Some young people feel [[a lot of stress]] in sports competitions.","ans":"intense performance-related pressure"}],"exB":[{"q":"Patients should ___ a doctor if symptoms continue.","opts":["meet","see","visit to","find"],"ans":1,"why":"see a doctor; 'visit to' sai giới từ."},{"q":"Excessive screen time can ___ children's ability to concentrate.","opts":["affect to","effect","affect","have an affect on"],"ans":2,"why":"affect (v) + tân ngữ; 'effect' là danh từ."},{"q":"Medical advice found online is often ___.","opts":["unreliable","unreliably","unreliability","unrely"],"ans":0,"why":"tính từ sau 'is often'."},{"q":"Extreme sports carry a high ___ of injury.","opts":["risk","chance","fear","worry"],"ans":0,"why":"carry a high risk of."},{"q":"Rescue costs are ___ by taxpayers.","opts":["borne","borrowed","bored","bearing"],"ans":0,"why":"be borne by (bear – bore – borne)."},{"q":"Some experts argue that children need sensible limits ___ a total ban.","opts":["instead","rather than","instead to","than"],"ans":1,"why":"rather than + danh từ."}],"exC":{"para":"Many people use the Internet to get medical advice because it is free and quick. But the Internet can give wrong information, so some people wait too long to see a doctor and their illness becomes worse. So I think this is a bad development.","model":"Many people turn to online sources for medical advice because it is cost-free and instantly accessible. However, unreliable information can lead to incorrect self-diagnosis, causing patients to delay seeking professional medical attention and allowing treatable conditions to deteriorate. I therefore regard this development as largely negative."},"exD":[{"task":"Prompt 3 (Discussion). Viết câu đầu Body 1 dùng Those who support a ban argue that … và borne by taxpayers.","model":"Those who support a ban argue that high-risk activities impose rescue and medical costs that are ultimately borne by taxpayers."},{"task":"Prompt 3 (Discussion). Viết câu nêu ý kiến dùng Personally, I side with … provided that.","model":"Personally, I side with allowing such activities, provided that participants carry compulsory insurance and follow strict safety rules."}]}],"review":{"match":{"left":["not enough plumbers","poor people cannot get treatment","sit all day","free and quick","make fruit and vegetables cheaper","learn while working","cannot focus","prevention costs less","old people ignore doctors' advice","study any time, any place"],"right":["earn while they learn through workplace-based training","subsidise fresh produce","be priced out of essential care","an acute shortage of skilled tradespeople","struggle to maintain concentration","cost-effective in the long term","lead a sedentary lifestyle","instantly accessible and cost-free","study flexibly, unconstrained by time or location","elderly patients fail to heed medical advice"],"key":["d","c","g","h","b","a","e","f","j","i"]},"register":[{"opts":["Online classes are kind of cheap, so loads of people go for them.","Online courses are relatively inexpensive, which attracts many working adults.","Online classes cost not much so people like them.","People like online classes because they are cheap, you know."],"ans":1,"why":"Trang trọng, collocation chính xác, không khẩu ngữ (kind of, loads of, you know)."},{"opts":["The government must do something about doctors.","Governments should try hard for doctors.","Governments should address the shortage of medical professionals by funding more training places.","Doctors are needed by the government."],"ans":2,"why":"Giải pháp cụ thể: ai làm gì, bằng cách nào."},{"opts":["Teachers exert a profound influence on pupils' intellectual and social development.","Teachers are really important for kids' growth.","Teachers have big effect to kids.","Teachers are much important."],"ans":0,"why":"Cụm học thuật chính xác; các phương án còn lại có lỗi từ vựng/ngữ pháp hoặc khẩu ngữ."},{"opts":["Smoking is bad, but loads of people still do it.","Smoking is harmful, however many young people still smoke.","Despite of the risks, people smoke.","Despite the well-known risks of smoking, many young people continue to smoke."],"ans":3,"why":"Despite + danh từ, đúng ngữ pháp; B là comma splice, C sai 'Despite of'."},{"opts":["Poor kids can't go to uni because fees are too big.","Students from low-income backgrounds are often deterred from enrolling by soaring tuition fees.","Poor students cannot go uni because of expensive fees.","Fees are too expensive so poor students not go."],"ans":1,"why":"Văn phong học thuật, collocation đúng."}],"errors":[{"s":"Obesity is one of most serious problem in modern world.","ans":"Obesity is one of the most serious problems in the modern world."},{"s":"The number of children who are overweight have increased.","ans":"The number of children who are overweight has increased."},{"s":"Despite of the high prices, many people choose private clinics.","ans":"Despite the high prices, many people choose private clinics."},{"s":"Governments should spend more on prevent illness.","ans":"Governments should spend more on preventing illness (or: on prevention)."},{"s":"Students can learn many knowledges from internet.","ans":"Students can acquire a great deal of knowledge from the internet."},{"s":"Although online courses are flexible, but they need motivation.","ans":"Although online courses are flexible, they require motivation. (bỏ 'but')"},{"s":"Smoking is harmful, however many young people still smoke.","ans":"Smoking is harmful; however, many young people still smoke. (hoặc: Although smoking is harmful, …)"},{"s":"Teachers are responsible to help students understanding the key components.","ans":"Teachers are responsible for helping students understand the key components."}]}};
+
+/* ------------------------------------------------------------ helpers */
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mk = s => esc(s).replace(/\[\[(.*?)\]\]/g, '<u>$1</u>');
+const plain = s => String(s).replace(/\[\[(.*?)\]\]/g, '$1');
+const LET = 'abcdefghij';
+const KEY = 'lexwb-v1';
+const pad = n => String(n).padStart(2,'0');
+const fmtDur = ms => { const s=Math.max(0,Math.round(ms/1000)); return pad(Math.floor(s/3600))+':'+pad(Math.floor(s%3600/60))+':'+pad(s%60); };
+const fmtDurVi = ms => { const s=Math.max(0,Math.round(ms/1000)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+' giờ ':'')+(m||h?m+' phút ':'')+x+' giây'; };
+const fmtDT = t => new Date(t).toLocaleString('vi-VN',{hour12:false,day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+/* ------------------------------------------------------------ build item model */
+const SECTIONS = []; // {id,title,unit,prompts,refs,bank,groups:[{key,title,instr,items:[]}], matchBank}
+let ITEMS = {};
+function addItem(it){ ITEMS[it.id]=it; return it; }
+
+DATA.lessons.forEach(l => {
+  const sec = {id:l.id, title:'Lesson '+l.id+' · '+l.title, unit:l.unit, prompts:l.prompts, refs:l.refs, bank:l.bank, groups:[]};
+  sec.groups.push({title:'Exercise A · Nâng cấp cụm gạch chân', instr:'Viết lại câu, thay phần gạch chân bằng cụm học thuật phù hợp. Đổi cả ngữ pháp xung quanh nếu cần.',
+    items:l.exA.map((x,i)=>addItem({id:l.id+'-A'+(i+1), sec:l.id, grp:'A', type:'text', min:3, q:x.s, ans:x.ans, why:x.note||''}))});
+  sec.groups.push({title:'Exercise B · Chọn đáp án đúng', instr:'Chọn collocation, dạng từ hoặc giới từ chính xác.',
+    items:l.exB.map((x,i)=>addItem({id:l.id+'-B'+(i+1), sec:l.id, grp:'B', type:'choice', q:x.q, opts:x.opts, ansIdx:x.ans, why:x.why}))});
+  sec.groups.push({title:'Exercise C · Viết lại đoạn văn (Band 6 → 7.5+)', instr:'Viết lại đoạn dưới đây, dùng ít nhất 4 cụm học thuật, có 1 câu nhượng bộ (Admittedly …) và giữ nguyên lập trường.',
+    items:[addItem({id:l.id+'-C1', sec:l.id, grp:'C', type:'long', min:40, q:l.exC.para, quote:true, ans:l.exC.model, why:''})]});
+  sec.groups.push({title:'Exercise D · Xây câu theo đề thi thật', instr:'Viết câu theo yêu cầu, dùng đúng cấu trúc được nêu.',
+    items:l.exD.map((x,i)=>addItem({id:l.id+'-D'+(i+1), sec:l.id, grp:'D', type:'long', min:12, q:x.task, ans:x.model, why:''}))});
+  SECTIONS.push(sec);
+});
+{
+  const R = DATA.review;
+  const sec = {id:'R', title:'Cumulative Review · Ôn tập tổng hợp', unit:0, prompts:null, groups:[], matchBank:R.match.right};
+  sec.groups.push({title:'Review 1 · Nối cụm Bậc 1 với cụm Bậc 3', instr:'Chọn chữ cái tương ứng trong bảng phía trên.',
+    items:R.match.left.map((x,i)=>addItem({id:'R-M'+(i+1), sec:'R', grp:'M', type:'match', q:x, opts:R.match.right, ansIdx:LET.indexOf(R.match.key[i]), why:''}))});
+  sec.groups.push({title:'Review 2 · Chọn câu có văn phong học thuật nhất', instr:'Chọn một câu duy nhất.',
+    items:R.register.map((x,i)=>addItem({id:'R-S'+(i+1), sec:'R', grp:'S', type:'choice', q:'Câu nào trang trọng và chính xác nhất?', opts:x.opts, ansIdx:x.ans, why:x.why}))});
+  sec.groups.push({title:'Review 3 · Sửa lỗi', instr:'Viết lại mỗi câu cho đúng.',
+    items:R.errors.map((x,i)=>addItem({id:'R-E'+(i+1), sec:'R', grp:'E', type:'text', min:5, q:x.s, ans:x.ans, why:''}))});
+  SECTIONS.push(sec);
+}
+const ALL = SECTIONS.flatMap(s => s.groups.flatMap(g => g.items));
+const TOTAL = ALL.length;
+$('#totalItems').textContent = TOTAL;
+$('#totCnt').textContent = TOTAL;
+
+/* ------------------------------------------------------------ state */
+let S = null; // {name,start,end,ans:{},rev:{},rate:{},cur}
+function blank(name){ return {name, start:Date.now(), end:null, ans:{}, rev:{}, rate:{}, cur:SECTIONS[0].id}; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const j=localStorage.getItem(KEY); return j?JSON.parse(j):null; }catch(e){ return null; } }
+function clear(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+
+const hasAnswer = it => {
+  const a = S.ans[it.id];
+  if (it.type==='choice' || it.type==='match') return typeof a === 'number';
+  return typeof a === 'string' && a.trim().length >= it.min;
+};
+const isCorrect = it => S.ans[it.id] === it.ansIdx;
+const isAuto = it => it.type==='choice' || it.type==='match';
+
+/* ------------------------------------------------------------ rendering: item */
+function renderItem(it, idx){
+  const a = S.ans[it.id], rev = !!S.rev[it.id];
+  const n = idx+1;
+  let cls = 'item';
+  if (rev && isAuto(it)) cls += isCorrect(it) ? ' done-ok' : ' done-bad';
+  let h = `<div class="${cls}" id="it-${it.id}"><div class="q"><span class="n">${n}</span><div class="qt">`;
+  if (it.type==='choice' && it.grp==='S') h += `Chọn câu có văn phong học thuật nhất:`;
+  else if (it.quote) h += `<div class="box" style="margin:0;background:#f4f5f8;border-color:#8b94a5"><i>${mk(it.q)}</i></div>`;
+  else h += mk(it.q);
+  h += `</div></div>`;
+
+  if (it.type==='text'){
+    h += `<input class="ans" type="text" data-id="${it.id}" value="${esc(a||'')}" placeholder="Viết câu trả lời của bạn…" ${rev?'readonly':''} autocomplete="off" spellcheck="false">`;
+  } else if (it.type==='long'){
+    h += `<textarea data-id="${it.id}" placeholder="Viết câu trả lời của bạn…" ${rev?'readonly':''} spellcheck="false">${esc(a||'')}</textarea>`;
+  } else if (it.type==='choice'){
+    h += `<div class="opts ${it.grp==='B'?'inline':''}">` + it.opts.map((o,k)=>{
+      let c = 'opt'+(rev?' locked':'');
+      if (rev){ if (k===it.ansIdx) c+=' is-correct'; else if (k===a) c+=' is-wrong'; }
+      return `<label class="${c}"><input type="radio" name="r-${it.id}" data-id="${it.id}" value="${k}" ${a===k?'checked':''} ${rev?'disabled':''}><span>(${LET[k]}) ${esc(o)}</span></label>`;
+    }).join('') + `</div>`;
+  } else if (it.type==='match'){
+    h += `<select class="matchsel" data-id="${it.id}" ${rev?'disabled':''}><option value="">— chọn —</option>` +
+      it.opts.map((o,k)=>`<option value="${k}" ${a===k?'selected':''}>${LET[k]}</option>`).join('') + `</select>`;
+  }
+
+  // action row / reveal
+  if (!rev){
+    const ok = hasAnswer(it);
+    h += `<div class="row"><button class="btn" data-reveal="${it.id}" ${ok?'':'disabled'}>Xem đáp án gợi ý</button>` +
+         `<span class="lock" id="lk-${it.id}">${ok?'Sau khi xem, câu trả lời của bạn sẽ được khóa để so sánh.':'🔒 Điền câu trả lời để mở khóa đáp án.'}</span></div>`;
+  } else {
+    if (isAuto(it)){
+      const ok = isCorrect(it);
+      const right = it.type==='match' ? `(${LET[it.ansIdx]}) ${it.opts[it.ansIdx]}` : `(${LET[it.ansIdx]}) ${it.opts[it.ansIdx]}`;
+      h += `<div class="sug"><div class="t">ĐÁP ÁN GỢI Ý · <span class="verdict ${ok?'ok':'bad'}">${ok?'Chính xác':'Chưa đúng'}</span></div>` +
+           `<div class="b">${esc(right)}</div>` + (it.why?`<div class="why">${esc(it.why)}</div>`:'') + `</div>`;
+    } else {
+      h += `<div class="sug"><div class="t">ĐÁP ÁN GỢI Ý (BAND 7.5+)</div><div class="b">${esc(it.ans)}</div>` +
+           (it.why?`<div class="why">${esc(it.why)}</div>`:'') + `</div>`;
+      const r = S.rate[it.id];
+      h += `<div class="rate"><span class="lbl">Tự đánh giá so với đáp án gợi ý:</span>` +
+        [[2,'Đạt ý'],[1,'Gần đúng'],[0,'Chưa đạt']].map(([v,t])=>`<button class="r${v}" data-rate="${it.id}" data-v="${v}" aria-pressed="${r===v}">${t}</button>`).join('') + `</div>`;
+    }
+  }
+  h += `</div>`;
+  return h;
+}
+function repaintItem(it){
+  const el = document.getElementById('it-'+it.id);
+  if (!el) return;
+  const sec = SECTIONS.find(s=>s.id===it.sec);
+  const g = sec.groups.find(g=>g.items.includes(it));
+  const tmp = document.createElement('div');
+  tmp.innerHTML = renderItem(it, g.items.indexOf(it));
+  el.replaceWith(tmp.firstElementChild);
+}
+
+/* ------------------------------------------------------------ rendering: lesson page */
+function renderPage(){
+  const sec = SECTIONS.find(s=>s.id===S.cur);
+  const col = sec.unit===2 ? 'var(--u2)' : sec.unit===1 ? 'var(--u1)' : '#374151';
+  const colL = sec.unit===2 ? 'var(--u2l)' : 'var(--u1l)';
+  let h = `<div style="--acc:${col};--u1l:${colL}">`;
+  h += `<h2 class="lt" style="color:${col}">${esc(sec.title)}</h2>`;
+  h += `<div class="unit">${sec.unit===1?'Unit 1 · Education':sec.unit===2?'Unit 2 · Healthcare':'Ôn tập tổng hợp'}</div>`;
+  if (sec.prompts){
+    h += `<div class="box"><div class="t">ĐỀ THI THAM CHIẾU</div><ol>${sec.prompts.map(p=>`<li>${esc(p)}</li>`).join('')}</ol><div class="ref">${esc(sec.refs)}</div></div>`;
+    h += `<h3 class="sec" style="margin-top:8px">Phrase Bank · cụm học thuật Bậc 3</h3>`;
+    h += `<div class="bank">${sec.bank.map(b=>`<span>${esc(b)}</span>`).join('')}</div>`;
+    h += `<p class="hint">Các cụm đã được xáo trộn. Mỗi cụm khớp với một ý ở Exercise A; bạn có thể dùng đáp án tương đương nếu chính xác.</p>`;
+  }
+  if (sec.matchBank){
+    h += `<div class="matchbank">${sec.matchBank.map((b,k)=>`<div><b>${LET[k]}.</b>${esc(b)}</div>`).join('')}</div>`;
+  }
+  sec.groups.forEach(g=>{
+    h += `<h3 class="sec">${esc(g.title)}</h3><p class="instr">${esc(g.instr)}</p>`;
+    g.items.forEach((it,i)=>{ h += renderItem(it,i); });
+  });
+  const i = SECTIONS.indexOf(sec);
+  h += `<div class="nav"><button class="btn ghost" id="prevB" ${i===0?'disabled':''}>← Bài trước</button>` +
+       (i<SECTIONS.length-1 ? `<button class="btn" id="nextB">Bài tiếp theo →</button>` : `<span></span>`) + `</div>`;
+  if (i===SECTIONS.length-1 || true){
+    h += `<div class="finishbar"><p>Khi đã làm xong (hoặc muốn dừng), bấm Hoàn thành để chốt thời gian làm bài và tạo báo cáo. Câu chưa làm sẽ được ghi là “Chưa làm”.</p><button class="btn big" id="finishB">Hoàn thành &amp; xem báo cáo</button></div>`;
+  }
+  h += `</div>`;
+  $('#page').innerHTML = h;
+}
+
+function renderTabs(){
+  $('#tabs').innerHTML = SECTIONS.map(s=>{
+    const items = s.groups.flatMap(g=>g.items);
+    const done = items.filter(it=>S.rev[it.id]).length;
+    const col = s.unit===2 ? 'var(--u2)' : s.unit===1 ? 'var(--u1)' : '#374151';
+    const sel = s.id===S.cur;
+    return `<button class="tab" role="tab" aria-selected="${sel}" data-tab="${s.id}" style="${sel?`background:${col}`:''}">${s.id==='R'?'Ôn tập':s.id}<span class="dot">${done}/${items.length}</span></button>`;
+  }).join('');
+}
+function updateCounters(){
+  const answered = ALL.filter(it=>hasAnswer(it)).length;
+  $('#ansCnt').textContent = answered;
+  $('#bar').style.width = (answered/TOTAL*100)+'%';
+  renderTabs();
+}
+
+/* ------------------------------------------------------------ events */
+document.addEventListener('input', e=>{
+  const t = e.target;
+  if (!(t.matches('input.ans') || t.matches('textarea'))) return;
+  const it = ITEMS[t.dataset.id]; if (!it || S.rev[it.id]) return;
+  S.ans[it.id] = t.value; save();
+  const ok = hasAnswer(it);
+  const btn = document.querySelector(`[data-reveal="${it.id}"]`);
+  if (btn) btn.disabled = !ok;
+  const lk = document.getElementById('lk-'+it.id);
+  if (lk) lk.textContent = ok ? 'Sau khi xem, câu trả lời của bạn sẽ được khóa để so sánh.' : '🔒 Điền câu trả lời để mở khóa đáp án.';
+  updateCounters();
+});
+document.addEventListener('change', e=>{
+  const t = e.target;
+  if (!t.dataset || !t.dataset.id) return;
+  const it = ITEMS[t.dataset.id]; if (!it || S.rev[it.id]) return;
+  if (t.matches('input[type=radio]') ) S.ans[it.id] = +t.value;
+  else if (t.matches('select')) { if (t.value==='') delete S.ans[it.id]; else S.ans[it.id] = +t.value; }
+  else return;
+  save();
+  const ok = hasAnswer(it);
+  const btn = document.querySelector(`[data-reveal="${it.id}"]`);
+  if (btn) btn.disabled = !ok;
+  const lk = document.getElementById('lk-'+it.id);
+  if (lk) lk.textContent = ok ? 'Sau khi xem, câu trả lời của bạn sẽ được khóa để so sánh.' : '🔒 Điền câu trả lời để mở khóa đáp án.';
+  updateCounters();
+});
+document.addEventListener('click', e=>{
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.reveal){
+    const it = ITEMS[b.dataset.reveal];
+    if (!hasAnswer(it)) return;
+    if (typeof S.ans[it.id]==='string') S.ans[it.id] = S.ans[it.id].trim();
+    S.rev[it.id] = true; save(); repaintItem(it); updateCounters();
+  } else if (b.dataset.rate){
+    S.rate[b.dataset.rate] = +b.dataset.v; save(); repaintItem(ITEMS[b.dataset.rate]);
+  } else if (b.dataset.tab){
+    goto(b.dataset.tab);
+  } else if (b.id==='prevB'){ step(-1); }
+  else if (b.id==='nextB'){ step(1); }
+  else if (b.id==='finishB' || b.id==='toReport'){ openReport(b.id==='finishB'); }
+});
+function goto(id){ S.cur = id; save(); renderTabs(); renderPage(); window.scrollTo({top:0}); }
+function step(d){ const i = SECTIONS.findIndex(s=>s.id===S.cur)+d; if (SECTIONS[i]) goto(SECTIONS[i].id); }
+
+/* ------------------------------------------------------------ clock */
+let tick = null;
+function startClock(){
+  clearInterval(tick);
+  const upd = ()=>{ $('#clock').textContent = fmtDur((S.end||Date.now()) - S.start); };
+  upd(); tick = setInterval(upd, 1000);
+}
+
+/* ------------------------------------------------------------ start / resume */
+function enter(){
+  $('#start').style.display='none';
+  $('#app').style.display='block';
+  $('#whoLbl').textContent = S.name;
+  $('#mainView').style.display='block';
+  $('#reportView').style.display='none';
+  renderTabs(); renderPage(); updateCounters(); startClock();
+  window.scrollTo({top:0});
+}
+$('#startBtn').addEventListener('click', ()=>{
+  const name = $('#nameIn').value.trim();
+  if (name.length < 2){ $('#startErr').textContent = 'Vui lòng nhập họ tên học viên.'; $('#nameIn').focus(); return; }
+  if (S && S.name && !confirm('Bắt đầu lại sẽ xóa bài làm đang lưu. Tiếp tục?')) return;
+  S = blank(name); save(); enter();
+});
+$('#nameIn').addEventListener('keydown', e=>{ if (e.key==='Enter') $('#startBtn').click(); });
+$('#resumeBtn').addEventListener('click', ()=>{ enter(); });
+(function boot(){
+  const saved = load();
+  if (saved && saved.name && saved.ans){
+    S = saved;
+    const cnt = Object.keys(S.rev||{}).length;
+    $('#resumeNote').style.display='block';
+    $('#resumeNote').innerHTML = `Có bài đang làm dở của <b>${esc(S.name)}</b> (bắt đầu ${esc(fmtDT(S.start))}, đã xem đáp án ${cnt}/${TOTAL} câu${S.end?', đã hoàn thành':''}).`;
+    $('#resumeBtn').style.display='inline-block';
+    $('#nameIn').value = S.name;
+    $('#startBtn').textContent = 'Bắt đầu bài mới';
+    $('#startBtn').classList.add('ghost'); $('#startBtn').classList.remove('big');
+    $('#resumeBtn').classList.add('big');
+  }
+})();
+
+/* ------------------------------------------------------------ report */
+function openReport(finish){
+  if (finish){
+    const left = ALL.filter(it=>!hasAnswer(it)).length;
+    if (left>0 && !confirm(`Còn ${left} câu chưa làm. Vẫn hoàn thành và tạo báo cáo?`)) return;
+    if (!S.end){ S.end = Date.now(); save(); }
+  }
+  buildReport();
+  $('#mainView').style.display='none';
+  $('#reportView').style.display='block';
+  startClock();
+  window.scrollTo({top:0});
+}
+$('#backBtn').addEventListener('click', ()=>{
+  if (S.end && !confirm('Quay lại làm tiếp sẽ mở lại đồng hồ làm bài (thời gian tiếp tục tính). Tiếp tục?')) return;
+  if (S.end){ S.end = null; save(); }
+  $('#reportView').style.display='none'; $('#mainView').style.display='block'; startClock();
+});
+$('#printBtn').addEventListener('click', ()=>{
+  if (!S.end){ if (!confirm('Bài chưa được chốt hoàn thành, thời gian làm bài sẽ tính đến lúc này. Tiếp tục xuất PDF?')) return; S.end = Date.now(); save(); buildReport(); }
+  const old = document.title;
+  document.title = 'Bao-cao_' + S.name.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9]+/g,'_') + '_' + new Date(S.end).toISOString().slice(0,10);
+  window.print();
+  setTimeout(()=>{ document.title = old; }, 500);
+});
+
+function statusOf(it){
+  if (!hasAnswer(it)) return {k:'none', t:'Chưa làm'};
+  if (!S.rev[it.id]) return {k:'noref', t:'Đã làm · chưa xem đáp án'};
+  if (isAuto(it)) return isCorrect(it) ? {k:'ok', t:'Chính xác'} : {k:'bad', t:'Chưa đúng'};
+  const r = S.rate[it.id];
+  if (r===2) return {k:'ok', t:'Tự đánh giá: Đạt ý'};
+  if (r===1) return {k:'mid', t:'Tự đánh giá: Gần đúng'};
+  if (r===0) return {k:'bad', t:'Tự đánh giá: Chưa đạt'};
+  return {k:'noref', t:'Đã so sánh · chưa tự đánh giá'};
+}
+function userAnswerText(it){
+  const a = S.ans[it.id];
+  if (typeof a === 'undefined' || (typeof a==='string' && !a.trim())) return null;
+  if (isAuto(it)) return `(${LET[a]}) ${it.opts[a]}`;
+  return a;
+}
+function sugText(it){
+  if (isAuto(it)) return `(${LET[it.ansIdx]}) ${it.opts[it.ansIdx]}` + (it.why?`  —  ${it.why}`:'');
+  return it.ans + (it.why?`  (${it.why})`:'');
+}
+function buildReport(){
+  const end = S.end || Date.now();
+  const dur = end - S.start;
+  const auto = ALL.filter(isAuto);
+  const autoDone = auto.filter(it=>hasAnswer(it));
+  const autoOk = autoDone.filter(it=>isCorrect(it)).length;
+  const txt = ALL.filter(it=>!isAuto(it));
+  const txtDone = txt.filter(it=>hasAnswer(it));
+  const rated = txtDone.filter(it=>typeof S.rate[it.id]==='number');
+  const pts = rated.reduce((a,it)=>a+S.rate[it.id]/2,0);
+  const answeredAll = ALL.filter(it=>hasAnswer(it)).length;
+  const accAuto = autoDone.length ? Math.round(autoOk/autoDone.length*100) : 0;
+  const accTxt = rated.length ? Math.round(pts/rated.length*100) : null;
+
+  let h = `<h1>Báo cáo bài làm · Lexical Upgrade Workbook</h1>
+  <div class="sub">HUONG STELLA PARADIGM · Writing Studio · IELTS Writing Task 2 · Nâng cấp từ vựng lên cụm học thuật</div>
+  <div class="meta">
+    <div><span>Học viên</span><b>${esc(S.name)}</b></div>
+    <div><span>Thời gian hoàn thành bài</span><b>${esc(fmtDurVi(dur))}</b> <small>(${fmtDur(dur)})</small></div>
+    <div><span>Bắt đầu làm</span><b>${esc(fmtDT(S.start))}</b></div>
+    <div><span>Kết thúc</span><b>${esc(fmtDT(end))}</b>${S.end?'':' <small>(chưa chốt)</small>'}</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>${answeredAll}/${TOTAL}</b><span>câu đã làm</span></div>
+    <div class="stat"><b>${autoOk}/${auto.length}</b><span>câu chọn đúng${autoDone.length<auto.length?` (đã làm ${autoDone.length})`:''}</span></div>
+    <div class="stat"><b>${accAuto}%</b><span>độ chính xác câu chọn</span></div>
+    <div class="stat"><b>${accTxt===null?'—':accTxt+'%'}</b><span>tự đánh giá câu viết (${rated.length}/${txtDone.length} câu)</span></div>
+  </div>`;
+
+  // summary table
+  h += `<h2>Tổng hợp theo bài</h2><table class="sum"><thead><tr><th>Bài</th><th>Đã làm</th><th>Câu chọn đúng</th><th>Tự đánh giá (Đạt / Gần đúng / Chưa)</th></tr></thead><tbody>`;
+  SECTIONS.forEach(s=>{
+    const its = s.groups.flatMap(g=>g.items);
+    const d = its.filter(hasAnswer).length;
+    const a = its.filter(isAuto), ad = a.filter(hasAnswer);
+    const ok = ad.filter(isCorrect).length;
+    const t = its.filter(it=>!isAuto(it) && hasAnswer(it));
+    const r2 = t.filter(it=>S.rate[it.id]===2).length, r1 = t.filter(it=>S.rate[it.id]===1).length, r0 = t.filter(it=>S.rate[it.id]===0).length;
+    h += `<tr><td>${esc(s.title)}</td><td>${d}/${its.length}</td><td>${ok}/${a.length}</td><td>${r2} / ${r1} / ${r0}${t.length-(r2+r1+r0)>0?` (+${t.length-(r2+r1+r0)} chưa đánh giá)`:''}</td></tr>`;
+  });
+  h += `</tbody></table>`;
+
+  // detail
+  h += `<h2>Chi tiết bài làm và so sánh với đáp án gợi ý</h2>`;
+  SECTIONS.forEach(s=>{
+    h += `<h3>${esc(s.title)}</h3>`;
+    s.groups.forEach(g=>{
+      h += `<div class="gh">${esc(g.title)}</div>`;
+      g.items.forEach((it,i)=>{
+        const st = statusOf(it);
+        const ua = userAnswerText(it);
+        const cls = {ok:'ok',bad:'bad',mid:'mid'}[st.k] || '';
+        const q = it.type==='match' ? `${it.q}  →  chọn chữ cái` : it.grp==='S' ? 'Chọn câu có văn phong học thuật nhất' : it.q;
+        h += `<div class="ri"><div class="h"><span class="qq">${i+1}. ${it.quote?'<i>'+mk(q)+'</i>':mk(q)}</span>` +
+          `<span class="verdict ${cls}" style="white-space:nowrap;align-self:flex-start">${esc(st.t)}</span></div>`;
+        if (it.grp==='S') h += `<div class="l">Các lựa chọn</div><div class="v">${it.opts.map((o,k)=>`(${LET[k]}) ${esc(o)}`).join('\n')}</div>`;
+        h += `<div class="l">Câu trả lời của học viên</div><div class="v ${ua?'':'empty'}">${ua?esc(ua):'(chưa làm)'}</div>`;
+        if (S.rev[it.id] || !ua){
+          h += `<div class="l">Đáp án gợi ý${ua?'':' (học viên chưa làm)'}</div><div class="v sugv">${esc(sugText(it))}</div>`;
+        } else {
+          h += `<div class="l">Đáp án gợi ý</div><div class="v empty">(học viên chưa xem đáp án)</div>`;
+        }
+        h += `</div>`;
+      });
+    });
+  });
+  h += `<p class="note">Câu chọn được chấm tự động. Với câu viết, đáp án gợi ý là một phương án Band 7.5+; kết quả “Đạt ý / Gần đúng / Chưa đạt” do học viên tự đánh giá khi so sánh. Giáo viên nên xem lại các câu viết, nhất là collocation và ngữ pháp xung quanh cụm từ.</p>`;
+  $('#report').innerHTML = h;
+}
+</script>
+</body>
+</html>
